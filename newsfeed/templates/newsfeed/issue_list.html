@@ -1,0 +1,5 @@
+{% for issue in object_list %}
+    <h2><a href="{{ issue.get_absolute_url }}">{{ issue.title }}</a></h2>
+    <p>{{ issue.short_description }}</p>
+    release date: <b>{{ issue.publish_date|date:"D d M Y" }}</b>
+{% endfor %}
