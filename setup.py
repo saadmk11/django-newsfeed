@@ -20,7 +20,7 @@ setup(
     zip_safe=False,
     keywords='django-newsfeed news curator newsletter subscription',
     classifiers=[
-        'Development Status :: 1 - Alpha',
+        'Development Status :: 1 - Planning',
         'Framework :: Django :: 3.1',
         'Intended Audience :: Developers',
         'License :: OSI Approved :: MIT License',
