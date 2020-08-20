@@ -1,0 +1,2 @@
+include LICENSE
+recursive-include newsfeed *.html *.png *.gif *js *.css *jpg *jpeg *svg *py
