@@ -1,4 +1,5 @@
-from django.contrib import admin
+from django.contrib import admin, messages
+from django.utils import timezone
 
 from .models import Issue, Newsletter, Post, PostCategory, Subscriber
 
@@ -13,7 +14,7 @@ class IssueAdmin(admin.ModelAdmin):
     list_display = (
         'issue_number', 'title',
         'publish_date', 'issue_type',
-        'is_draft',
+        'is_draft', 'is_published',
     )
     list_filter = ('is_draft', 'issue_type',)
     search_fields = (
@@ -23,6 +24,28 @@ class IssueAdmin(admin.ModelAdmin):
     readonly_fields = ('created_at', 'updated_at',)
     sortable_by = ('issue_number', 'publish_date',)
     inlines = (PostInline,)
+
+    actions = ('publish_issues', 'make_draft',)
+
+    def publish_issues(self, request, queryset):
+        updated = queryset.update(is_draft=False)
+        messages.add_message(
+            request,
+            messages.SUCCESS,
+            f'Successfully published {updated} issue(s)',
+        )
+
+    publish_issues.short_description = 'Publish issues now'
+
+    def make_draft(self, request, queryset):
+        updated = queryset.update(is_draft=True)
+        messages.add_message(
+            request,
+            messages.SUCCESS,
+            f'Successfully marked {updated} issue(s) as draft',
+        )
+
+    make_draft.short_description = 'Mark issues as draft'
 
 
 class NewsletterAdmin(admin.ModelAdmin):
@@ -40,6 +63,18 @@ class NewsletterAdmin(admin.ModelAdmin):
     sortable_by = ('schedule',)
     autocomplete_fields = ('issue',)
 
+    actions = ('send_newsletters',)
+
+    def send_newsletters(self, request, queryset):
+        #TODO: Send newsletters to subscribers
+        messages.add_message(
+            request,
+            messages.SUCCESS,
+            f'Successfully sent {0} newsletters(s) to subscribers',
+        )
+
+    send_newsletters.short_description = 'Send newsletters'
+
 
 class PostAdmin(admin.ModelAdmin):
     list_select_related = ('issue', 'category',)
@@ -55,6 +90,28 @@ class PostAdmin(admin.ModelAdmin):
     )
     readonly_fields = ('created_at', 'updated_at',)
     autocomplete_fields = ('issue', 'category',)
+
+    actions = ('hide_post', 'make_post_visible',)
+
+    def hide_post(self, request, queryset):
+        updated = queryset.update(is_visible=False)
+        messages.add_message(
+            request,
+            messages.SUCCESS,
+            f'Successfully marked {updated} post(s) as hidden',
+        )
+
+    hide_post.short_description = 'Hide posts from issue'
+
+    def make_post_visible(self, request, queryset):
+        updated = queryset.update(is_visible=True)
+        messages.add_message(
+            request,
+            messages.SUCCESS,
+            f'Successfully made {updated} post(s) visible',
+        )
+
+    make_post_visible.short_description = 'Make posts visible'
 
 
 class PostCategoryAdmin(admin.ModelAdmin):

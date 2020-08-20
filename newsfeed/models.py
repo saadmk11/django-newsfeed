@@ -26,10 +26,13 @@ class Issue(models.Model):
     objects = IssueQuerySet.as_manager()
 
     class Meta:
-        ordering = ['-publish_date', '-created_at']
+        ordering = ['-publish_date', '-issue_number']
 
     def __str__(self):
         return self.title
+
+    def is_published(self):
+        return self.is_draft == False and self.publish_date <= timezone.now()
 
     def get_absolute_url(self):
         return reverse(
@@ -85,8 +88,9 @@ class Newsletter(models.Model):
         related_name='newsletters'
     )
     subject = models.CharField(max_length=128)
-    is_sent = models.BooleanField(default=False)
     schedule = models.DateTimeField(blank=True, null=True)
+    is_sent = models.BooleanField(default=False)
+    sent_at = models.DateTimeField(blank=True, null=True)
 
     created_at = models.DateTimeField(auto_now_add=True)
     updated_at = models.DateTimeField(auto_now=True)
