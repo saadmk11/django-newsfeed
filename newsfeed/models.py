@@ -4,7 +4,7 @@ from django.urls import reverse
 from django.utils import timezone
 
 from .constants import ISSUE_TYPE_CHOICES, WEEKLY_ISSUE
-from .querysets import IssueQuerySet
+from .querysets import IssueQuerySet, SubscriberQuerySet, PostQuerySet
 
 
 class Issue(models.Model):
@@ -43,9 +43,11 @@ class Issue(models.Model):
 
 class PostCategory(models.Model):
     name = models.CharField(max_length=255)
+    order = models.PositiveIntegerField(default=0)
 
     class Meta:
         verbose_name_plural = 'Post categories'
+        ordering = ['order']
 
     def __str__(self):
         return self.name
@@ -70,12 +72,15 @@ class Post(models.Model):
     source_url = models.URLField()
     is_visible = models.BooleanField(default=False)
     short_description = models.TextField()
+    order = models.PositiveIntegerField(default=0)
 
     created_at = models.DateTimeField(auto_now_add=True)
     updated_at = models.DateTimeField(auto_now=True)
 
+    objects = PostQuerySet.as_manager()
+
     class Meta:
-        ordering = ['-created_at']
+        ordering = ['order', '-created_at']
 
     def __str__(self):
         return self.title
@@ -107,6 +112,8 @@ class Subscriber(models.Model):
     confirmation_sent_date = models.DateTimeField()
 
     created_at = models.DateTimeField(auto_now_add=True)
+
+    objects = SubscriberQuerySet.as_manager()
 
     def __str__(self):
         return self.email_address

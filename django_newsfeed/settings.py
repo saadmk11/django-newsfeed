@@ -121,5 +121,30 @@ USE_TZ = True
 
 STATIC_URL = '/static/'
 
+# Settings for smtp
+EMAIL_HOST = 'EMAIL_HOST'
+EMAIL_HOST_USER = 'EMAIL_HOST_USER'
+EMAIL_HOST_PASSWORD = 'EMAIL_HOST_PASSWORD'
+EMAIL_PORT = 587
+EMAIL_USE_TLS = True
+EMAIL_BACKEND = 'django.core.mail.backends.console.EmailBackend'
+
 # Newsfeed settings
 SUBSCRIPTION_EMAIL_CONFIRMATION_EXPIRE_DAYS = 3
+NEWSLETTER_EMAIL_BATCH_SIZE = 50
+NEWSLETTER_EMAIL_BATCH_WAIT = 5
+
+# log settings
+LOGGING = {
+    'version': 1,
+    'disable_existing_loggers': False,
+    'handlers': {
+        'console': {
+            'class': 'logging.StreamHandler',
+        },
+    },
+    'root': {
+        'handlers': ['console'],
+        'level': 'INFO',
+    },
+}

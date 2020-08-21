@@ -2,6 +2,7 @@ from django.contrib import admin, messages
 from django.utils import timezone
 
 from .models import Issue, Newsletter, Post, PostCategory, Subscriber
+from .send_newsletters import send_email_newsletter
 
 
 class PostInline(admin.TabularInline):
@@ -66,11 +67,12 @@ class NewsletterAdmin(admin.ModelAdmin):
     actions = ('send_newsletters',)
 
     def send_newsletters(self, request, queryset):
-        #TODO: Send newsletters to subscribers
+        # This should always be overridden to use a task
+        send_email_newsletter(newsletters=queryset, respect_schedule=False)
         messages.add_message(
             request,
             messages.SUCCESS,
-            f'Successfully sent {0} newsletters(s) to subscribers',
+            f'Successfully sent newsletters(s) to subscribers',
         )
 
     send_newsletters.short_description = 'Send newsletters'
@@ -80,7 +82,7 @@ class PostAdmin(admin.ModelAdmin):
     list_select_related = ('issue', 'category',)
     list_display = (
         'title', 'category',
-        'issue', 'is_visible',
+        'issue',  'order', 'is_visible',
     )
     list_filter = ('is_visible', 'category',)
     search_fields = (
@@ -115,7 +117,7 @@ class PostAdmin(admin.ModelAdmin):
 
 
 class PostCategoryAdmin(admin.ModelAdmin):
-    list_display = ('name',)
+    list_display = ('name', 'order',)
     search_fields = ('name',)
 
 
