@@ -14,7 +14,8 @@ logger = logging.getLogger(__name__)
 
 
 def send_email_newsletter(newsletters=None, respect_schedule=True):
-    """sends newsletter emails to subscribers.
+    """
+    sends newsletter emails to subscribers.
 
     Should always be called inside a background task or a cronjob
 
@@ -83,7 +84,8 @@ def send_email_newsletter(newsletters=None, respect_schedule=True):
                     )
                     time.sleep(settings.NEWSLETTER_EMAIL_BATCH_WAIT)
 
-        sent_newsletters.append(newsletter.id)
+        if sent_emails > 0:
+            sent_newsletters.append(newsletter.id)
 
         logger.info(
             'Successfully Sent %s email(s) for ISSUE # %s ',
