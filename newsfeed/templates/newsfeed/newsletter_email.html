@@ -4,7 +4,7 @@
 <p>{{ short_description }}</p>
 publish date: <b>{{ publish_date|date:"D d M Y" }}</b>
 
-{% regroup post_list|dictsort:"order" by category as category_list %}
+{% regroup post_list|dictsort:"category.order" by category as category_list %}
 
 <ul>
 {% for category, posts in category_list %}
