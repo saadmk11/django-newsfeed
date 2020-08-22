@@ -5,12 +5,14 @@ python:
   - 3.7
 
 env:
-  - TOX_ENV=py37-django22
+
   - TOX_ENV=py36-django22
-  - TOX_ENV=py37-django30
   - TOX_ENV=py36-django30
-  - TOX_ENV=py37-django31
   - TOX_ENV=py36-django31
+  - TOX_ENV=py37-django22
+  - TOX_ENV=py37-django30
+  - TOX_ENV=py37-django31
+
 
 matrix:
   fast_finish: true
