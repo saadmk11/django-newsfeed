@@ -19,6 +19,7 @@ setup(
     install_requires=[
         'Django >= 2.2',
     ],
+    test_suite="runtests.runtests",
     license="MIT",
     zip_safe=False,
     keywords='django-newsfeed news curator newsletter subscription',
