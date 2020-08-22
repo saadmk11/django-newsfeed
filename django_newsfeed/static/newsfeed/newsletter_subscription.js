@@ -2,20 +2,24 @@ window.addEventListener("load", function () {
   let form = document.getElementById("subscriptionForm");
   let messageElement = document.getElementById("subscriptionMessage");
 
-  form.addEventListener("submit", async function (event) {
+  form.addEventListener("submit", function (event) {
     event.preventDefault();
     const data = new FormData(form);
 
     fetch(form.dataset.url, {
       method: "post",
+      mode: "same-origin",
       body: data,
-      credentials: "include",
+      credentials: "same-origin",
+      headers: {
+        'Accept': "application/json",
+        "X-Requested-With": "XMLHttpRequest",
+      },
     })
       .then(function (response) {
         response.json().then(function (data) {
           if (response.status !== 200) {
-            error_message = data.email_address;
-            messageElement.innerText = error_message;
+            messageElement.innerText = data.email_address;
             messageElement.classList.remove("success");
             messageElement.classList.add("error");
           } else {

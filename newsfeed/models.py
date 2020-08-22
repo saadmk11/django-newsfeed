@@ -159,8 +159,16 @@ class Subscriber(models.Model):
 
             return True
 
-    def send_verification_email(self, newly_created):
-        if not newly_created:
+    def send_verification_email(self, created):
+        minutes_before = timezone.now() - timezone.timedelta(minutes=5)
+
+        if (
+            self.verification_sent_date and
+            self.verification_sent_date >= minutes_before
+        ):
+            return
+
+        if not created:
             self.reset_token()
 
         self.verification_sent_date = timezone.now()
