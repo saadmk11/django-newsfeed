@@ -5,6 +5,7 @@ import time
 from django.conf import settings
 from django.core.mail import EmailMessage, get_connection
 from django.template.loader import render_to_string
+from django.urls import reverse
 from django.utils import timezone
 
 from newsfeed.models import Newsletter, Subscriber
@@ -114,6 +115,8 @@ def render_newsletter(newsletter):
         'publish_date': issue.publish_date,
         'short_description': issue.short_description,
         'post_list': issue.posts.visible(),
+        'unsubscribe_url': reverse('newsfeed:newsletter_unsubscribe'),
+        'site_url': settings.SITE_BASE_URL
     }
 
     html = render_to_string('newsfeed/email/newsletter_email.html', context)
