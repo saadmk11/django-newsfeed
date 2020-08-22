@@ -18,5 +18,5 @@ from django.urls import include, path
 
 urlpatterns = [
     path('admin/', admin.site.urls),
-    path('issues/', include('newsfeed.urls', namespace='newsfeed')),
+    path('newsfeed/', include('newsfeed.urls', namespace='newsfeed')),
 ]

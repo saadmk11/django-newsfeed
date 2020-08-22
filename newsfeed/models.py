@@ -1,10 +1,14 @@
+import uuid
+
 from django.conf import settings
+from django.core.mail import send_mail
 from django.db import models
 from django.urls import reverse
 from django.utils import timezone
 
 from .constants import ISSUE_TYPE_CHOICES, WEEKLY_ISSUE
 from .querysets import IssueQuerySet, SubscriberQuerySet, PostQuerySet
+from .utils.send_verification import send_subscription_verification_email
 
 
 class Issue(models.Model):
@@ -106,10 +110,10 @@ class Newsletter(models.Model):
 
 class Subscriber(models.Model):
     email_address = models.EmailField(unique=True)
-    token = models.CharField(max_length=128, unique=True)
+    token = models.CharField(max_length=128, unique=True, default=uuid.uuid4)
     verified = models.BooleanField(default=False)
     subscribed = models.BooleanField(default=False)
-    confirmation_sent_date = models.DateTimeField()
+    verification_sent_date = models.DateTimeField(blank=True, null=True)
 
     created_at = models.DateTimeField(auto_now_add=True)
 
@@ -118,11 +122,54 @@ class Subscriber(models.Model):
     def __str__(self):
         return self.email_address
 
-    def confirmation_expired(self):
+    def token_expired(self):
+        if not self.verification_sent_date:
+            return True
+
         expiration_date = (
-            self.confirmation_sent_date +
+            self.verification_sent_date +
             timezone.timedelta(
                 days=settings.SUBSCRIPTION_EMAIL_CONFIRMATION_EXPIRE_DAYS
             )
         )
         return expiration_date <= timezone.now()
+
+    def reset_token(self):
+        unique_token = str(uuid.uuid4())
+
+        while self.__class__.objects.filter(token=unique_token).exists():
+            unique_token = str(uuid.uuid4())
+
+        self.token = unique_token
+        self.save()
+
+    def verify(self):
+        if not self.token_expired():
+            self.verified = True
+            self.subscribed = True
+            self.save()
+
+            return True
+
+    def unsubscribe(self):
+        if self.subscribed:
+            self.subscribed = False
+            self.verified = False
+            self.save()
+
+            return True
+
+    def send_verification_email(self, newly_created):
+        if not newly_created:
+            self.reset_token()
+
+        self.verification_sent_date = timezone.now()
+        self.save()
+
+        send_subscription_verification_email(self)
+
+    def get_verification_url(self):
+        return reverse(
+            'newsfeed:newsletter_subscribe_confirm',
+            kwargs={'token': self.token}
+        )

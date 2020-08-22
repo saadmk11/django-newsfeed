@@ -1,0 +1,6 @@
+<form method="post" id="subscriptionForm" data-url="{% url 'newsfeed:newsletter_subscribe' %}">
+    {% csrf_token %}
+    {{ form }}
+    <button type="submit">Subscribe</button>
+</form>
+<div id="subscriptionMessage"></div>

@@ -1,8 +1,7 @@
 from django.contrib import admin, messages
-from django.utils import timezone
 
 from .models import Issue, Newsletter, Post, PostCategory, Subscriber
-from .send_newsletters import send_email_newsletter
+from newsfeed.utils.send_newsletters import send_email_newsletter
 
 
 class PostInline(admin.TabularInline):
@@ -124,12 +123,12 @@ class PostCategoryAdmin(admin.ModelAdmin):
 class SubscriberAdmin(admin.ModelAdmin):
     list_display = (
         'email_address', 'subscribed',
-        'verified', 'confirmation_expired',
-        'confirmation_sent_date',
+        'verified', 'token_expired',
+        'verification_sent_date',
     )
     list_filter = (
         'subscribed', 'verified',
-        'confirmation_sent_date',
+        'verification_sent_date',
     )
     search_fields = ('email_address',)
     readonly_fields = ('created_at',)

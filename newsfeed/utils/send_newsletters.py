@@ -7,7 +7,7 @@ from django.core.mail import EmailMessage, get_connection
 from django.template.loader import render_to_string
 from django.utils import timezone
 
-from .models import Newsletter, Subscriber
+from newsfeed.models import Newsletter, Subscriber
 
 
 logger = logging.getLogger(__name__)
@@ -116,7 +116,7 @@ def render_newsletter(newsletter):
         'post_list': issue.posts.visible(),
     }
 
-    html = render_to_string('newsfeed/newsletter_email.html', context)
+    html = render_to_string('newsfeed/email/newsletter_email.html', context)
 
     rendered_newsletter = {
         'subject': subject,
