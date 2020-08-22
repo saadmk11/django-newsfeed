@@ -8,6 +8,7 @@ def send_subscription_verification_email(verification_url, to_email):
     Sends verification e-mail to subscribers
 
     :param verification_url: subscribers unique verification url
+    :param to_email: subscribers email
     """
     context = {
         'site_url': settings.SITE_BASE_URL,
