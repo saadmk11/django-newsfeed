@@ -16,7 +16,7 @@ matrix:
 
 install: pip install -r requirements_test.txt
 
-script: tox -e $TOX_ENV
+script: tox
 
 after_success:
-  - codecov -e TOX_ENV
+  - codecov
