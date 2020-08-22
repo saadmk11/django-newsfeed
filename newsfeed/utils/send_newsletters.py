@@ -122,7 +122,7 @@ def render_newsletter(newsletter):
 
     rendered_newsletter = {
         'subject': subject,
-        'html':html
+        'html': html
     }
 
     return rendered_newsletter
