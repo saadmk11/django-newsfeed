@@ -1,21 +1,18 @@
 language: python
 
-python:
-  - 3.6
-  - 3.7
-
-env:
-
-  - TOX_ENV=py36-django22
-  - TOX_ENV=py36-django30
-  - TOX_ENV=py36-django31
-  - TOX_ENV=py37-django22
-  - TOX_ENV=py37-django30
-  - TOX_ENV=py37-django31
-
-
 matrix:
   fast_finish: true
+  include:
+    - env: TOXENV=lint
+    # Python 3.6
+    - python: 3.6
+      env: TOXENV=py36-django22,py36-django30,py36-django31
+
+    # Python 3.7
+    - python: 3.7
+      env: TOXENV=py37-django22,py37-django31,lint
+
+
 
 install: pip install -r requirements_test.txt
 
