@@ -174,7 +174,9 @@ class Subscriber(models.Model):
         self.verification_sent_date = timezone.now()
         self.save()
 
-        send_subscription_verification_email(self.get_verification_url())
+        send_subscription_verification_email(
+            self.get_verification_url(), self.email_address
+        )
 
     def get_verification_url(self):
         return reverse(

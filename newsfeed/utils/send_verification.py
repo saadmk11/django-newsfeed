@@ -3,7 +3,7 @@ from django.core.mail import EmailMultiAlternatives
 from django.template.loader import render_to_string
 
 
-def send_subscription_verification_email(verification_url):
+def send_subscription_verification_email(verification_url, to_email):
     """
     Sends verification e-mail to subscribers
 
@@ -28,7 +28,7 @@ def send_subscription_verification_email(verification_url):
     )
 
     message = EmailMultiAlternatives(
-        subject, text_body, settings.EMAIL_HOST_USER, [subscriber.email_address]
+        subject, text_body, settings.EMAIL_HOST_USER, [to_email]
     )
 
     message.attach_alternative(html_body, 'text/html')

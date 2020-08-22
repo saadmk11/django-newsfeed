@@ -64,7 +64,6 @@ class SubscriptionAjaxResponseMixin:
 
 class NewsletterSubscriptionMixin(SubscriptionAjaxResponseMixin, FormView):
     """Base Mixin for newsletter subscribe and unsubscribe view"""
-
     form_class = SubscriberEmailForm
     message = ''
     success = False
