@@ -157,7 +157,8 @@ def get_subscriber_emails(rendered_newsletter, connection):
     )
     batch_size = settings.NEWSLETTER_EMAIL_BATCH_SIZE
 
-    # if there is not batch size send all in one batch
+    # if there is no batch size specified
+    # by the user send all in one batch
     if not batch_size or batch_size <= 0:
         batch_size = len(subscriber_emails)
 

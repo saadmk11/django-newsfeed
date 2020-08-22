@@ -3,17 +3,15 @@ from django.core.mail import EmailMultiAlternatives
 from django.template.loader import render_to_string
 
 
-def send_subscription_verification_email(subscriber):
+def send_subscription_verification_email(verification_url):
     """
     Sends verification e-mail to subscribers
 
-    :param to_email: subscribers email address
-    :param rendered_newsletter: rendered html of the newsletter with subject
-    :param connection: email connection
+    :param verification_url: subscribers unique verification url
     """
     context = {
         'site_url': settings.SITE_BASE_URL,
-        'verification_url': subscriber.get_verification_url()
+        'verification_url': verification_url
     }
 
     # Send context so that users can use context data in the subject
