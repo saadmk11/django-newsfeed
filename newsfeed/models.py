@@ -10,6 +10,11 @@ from .querysets import IssueQuerySet, SubscriberQuerySet, PostQuerySet
 from .utils.send_verification import send_subscription_verification_email
 
 
+NEWSFEED_EMAIL_CONFIRMATION_EXPIRE_DAYS = getattr(
+    settings, 'NEWSFEED_EMAIL_CONFIRMATION_EXPIRE_DAYS', 3
+)
+
+
 class Issue(models.Model):
     title = models.CharField(max_length=128)
     issue_number = models.PositiveIntegerField(
@@ -127,7 +132,7 @@ class Subscriber(models.Model):
 
         expiration_date = (
             self.verification_sent_date + timezone.timedelta(
-                days=settings.SUBSCRIPTION_EMAIL_CONFIRMATION_EXPIRE_DAYS
+                days=NEWSFEED_EMAIL_CONFIRMATION_EXPIRE_DAYS
             )
         )
         return expiration_date <= timezone.now()
