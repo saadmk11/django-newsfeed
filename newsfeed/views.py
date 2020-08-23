@@ -140,9 +140,9 @@ class NewsletterSubscriptionConfirmView(DetailView):
 
     def get(self, request, *args, **kwargs):
         self.object = self.get_object()
-        verified = self.object.verify()
+        subscribed = self.object.subscribe()
 
         context = self.get_context_data(
-            object=self.object, verified=verified
+            object=self.object, subscribed=subscribed
         )
         return self.render_to_response(context)

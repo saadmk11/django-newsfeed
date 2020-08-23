@@ -39,6 +39,7 @@ class Issue(models.Model):
     def __str__(self):
         return self.title
 
+    @property
     def is_published(self):
         return not self.is_draft and self.publish_date <= timezone.now()
 
@@ -146,7 +147,7 @@ class Subscriber(models.Model):
         self.token = unique_token
         self.save()
 
-    def verify(self):
+    def subscribe(self):
         if not self.token_expired():
             self.verified = True
             self.subscribed = True
@@ -166,6 +167,7 @@ class Subscriber(models.Model):
         minutes_before = timezone.now() - timezone.timedelta(minutes=5)
         sent_date = self.verification_sent_date
 
+        # Only send email again if the last sent date is five minutes earlier
         if sent_date and sent_date >= minutes_before:
             return
 
