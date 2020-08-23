@@ -1,3 +1,4 @@
+from django.conf import settings
 from django.contrib import messages
 from django.http import JsonResponse
 from django.urls import reverse_lazy
@@ -6,6 +7,16 @@ from django.views.generic.detail import SingleObjectMixin
 
 from .forms import SubscriberEmailForm
 from .models import Issue, Post, Subscriber
+
+
+NEWSFEED_SUBSCRIPTION_REDIRECT_URL = getattr(
+    settings, 'NEWSFEED_SUBSCRIPTION_REDIRECT_URL',
+    reverse_lazy('newsfeed:issue_list')
+)
+NEWSFEED_UNSUBSCRIPTION_REDIRECT_URL = getattr(
+    settings, 'NEWSFEED_UNSUBSCRIPTION_REDIRECT_URL',
+    reverse_lazy('newsfeed:issue_list')
+)
 
 
 class IssueListView(ListView):
@@ -38,8 +49,11 @@ class IssueDetailView(SingleObjectMixin, ListView):
         return self.object.posts.visible().select_related('category')
 
 
-class SubscriptionAjaxResponseMixin:
+class SubscriptionAjaxResponseMixin(FormView):
     """Mixin to add Ajax support to the subscription form"""
+    form_class = SubscriberEmailForm
+    message = ''
+    success = False
 
     def form_invalid(self, form):
         response = super().form_invalid(form)
@@ -62,16 +76,9 @@ class SubscriptionAjaxResponseMixin:
             return response
 
 
-class NewsletterSubscriptionMixin(SubscriptionAjaxResponseMixin, FormView):
-    """Base Mixin for newsletter subscribe and unsubscribe view"""
-    form_class = SubscriberEmailForm
-    message = ''
-    success = False
-
-
-class NewsletterSubscribeView(NewsletterSubscriptionMixin):
+class NewsletterSubscribeView(SubscriptionAjaxResponseMixin):
     template_name = "newsfeed/newsletter_subscribe.html"
-    success_url = reverse_lazy('newsfeed:issue_list')
+    success_url = NEWSFEED_SUBSCRIPTION_REDIRECT_URL
 
     def form_valid(self, form):
         email_address = form.cleaned_data.get('email_address')
@@ -100,9 +107,9 @@ class NewsletterSubscribeView(NewsletterSubscriptionMixin):
         return super().form_valid(form)
 
 
-class NewsletterUnsubscribeView(NewsletterSubscriptionMixin):
+class NewsletterUnsubscribeView(SubscriptionAjaxResponseMixin):
     template_name = "newsfeed/newsletter_unsubscribe.html"
-    success_url = reverse_lazy('newsfeed:issue_list')
+    success_url = NEWSFEED_UNSUBSCRIPTION_REDIRECT_URL
 
     def form_valid(self, form):
         email_address = form.cleaned_data.get('email_address')
