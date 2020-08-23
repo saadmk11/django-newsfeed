@@ -3,8 +3,8 @@ from django.core.mail import EmailMultiAlternatives
 from django.template.loader import render_to_string
 
 
-NEWSFEED_SITE_BASE_URL = getattr(settings, 'NEWSFEED_SITE_BASE_URL', '')
 EMAIL_HOST_USER = getattr(settings, 'EMAIL_HOST_USER', '')
+NEWSFEED_SITE_BASE_URL = getattr(settings, 'NEWSFEED_SITE_BASE_URL', '')
 
 
 def send_subscription_verification_email(verification_url, to_email):

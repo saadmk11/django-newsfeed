@@ -93,10 +93,10 @@ def send_email_newsletter(newsletters=None, respect_schedule=True):
                     logger.info(
                         'Waiting %s seconds before sending '
                         'next batch of newsletter for ISSUE # %s',
-                        NEWSLETTER_EMAIL_BATCH_WAIT,
+                        NEWSFEED_EMAIL_BATCH_WAIT,
                         issue_number
                     )
-                    time.sleep(NEWSLETTER_EMAIL_BATCH_WAIT)
+                    time.sleep(NEWSFEED_EMAIL_BATCH_WAIT)
 
         if sent_emails > 0:
             sent_newsletters.append(newsletter.id)
@@ -171,7 +171,7 @@ def get_subscriber_emails(rendered_newsletter, connection):
     subscriber_emails = Subscriber.objects.subscribed().values_list(
         'email_address', flat=True
     )
-    batch_size = settings.NEWSLETTER_EMAIL_BATCH_SIZE
+    batch_size = NEWSFEED_EMAIL_BATCH_SIZE
 
     # if there is no batch size specified
     # by the user send all in one batch
