@@ -64,7 +64,9 @@ def send_email_newsletter(newsletters=None, respect_schedule=True):
             issue_number
         )
 
-        for email_messages in get_subscriber_emails(rendered_newsletter, connection):
+        for email_messages in get_subscriber_emails(
+            rendered_newsletter, connection
+        ):
             messages = list(email_messages)
 
             if messages:
