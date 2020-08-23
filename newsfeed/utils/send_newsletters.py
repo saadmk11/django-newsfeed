@@ -26,7 +26,6 @@ NEWSFEED_SITE_BASE_URL = getattr(
 EMAIL_HOST_USER = getattr(settings, 'EMAIL_HOST_USER', '')
 
 
-
 def send_email_newsletter(newsletters=None, respect_schedule=True):
     """
     sends newsletter emails to subscribers.
