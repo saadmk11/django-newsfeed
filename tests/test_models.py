@@ -5,7 +5,7 @@ from django.utils import timezone
 
 from model_bakery import baker
 
-from newsfeed.models import Issue, Post, Subscriber
+from newsfeed.models import Issue, Newsletter, Post, PostCategory, Subscriber
 
 
 class PostModelTest(TestCase):
@@ -13,6 +13,10 @@ class PostModelTest(TestCase):
     def setUp(self):
         self.invisible_posts = baker.make(Post, is_visible=False, _quantity=2)
         self.visible_posts = baker.make(Post, is_visible=True, _quantity=2)
+
+    def test_str(self):
+        post = Post.objects.visible().first()
+        self.assertEqual(post.title, str(post))
 
     def test_visible_queryset(self):
         posts = Post.objects.visible()
@@ -35,6 +39,10 @@ class IssueModelTest(TestCase):
         self.unreleased_issue = baker.make(
             Issue, is_draft=True,
         )
+
+    def test_str(self):
+        issue = Issue.objects.released().first()
+        self.assertEqual(issue.title, str(issue))
 
     def test_all_queryset(self):
         issues = Issue.objects.all()
@@ -75,6 +83,10 @@ class SubscriberModelTest(TestCase):
         self.unverified_subscriber = baker.make(
             Subscriber, subscribed=False, verified=False
         )
+
+    def test_str(self):
+        subscriber = Subscriber.objects.subscribed().first()
+        self.assertEqual(subscriber.email_address, str(subscriber))
 
     def test_all_queryset(self):
         subscribers = Subscriber.objects.all()
@@ -218,3 +230,17 @@ class SubscriberModelTest(TestCase):
             self.unverified_subscriber.get_verification_url(),
             expected_url
         )
+
+
+class NewsletterModelTest(TestCase):
+
+    def test_str(self):
+        newsletter = baker.make(Newsletter)
+        self.assertEqual(newsletter.subject, str(newsletter))
+
+
+class PostCategoryModelTest(TestCase):
+
+    def test_str(self):
+        category = baker.make(PostCategory)
+        self.assertEqual(category.name, str(category))
