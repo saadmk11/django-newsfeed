@@ -71,7 +71,7 @@ class NewsletterAdmin(admin.ModelAdmin):
         messages.add_message(
             request,
             messages.SUCCESS,
-            f'Successfully sent newsletters(s) to subscribers',
+            'Successfully sent newsletters(s) to subscribers',
         )
 
     send_newsletters.short_description = 'Send newsletters'
@@ -81,7 +81,7 @@ class PostAdmin(admin.ModelAdmin):
     list_select_related = ('issue', 'category',)
     list_display = (
         'title', 'category',
-        'issue',  'order', 'is_visible',
+        'issue', 'order', 'is_visible',
     )
     list_filter = ('is_visible', 'category',)
     search_fields = (

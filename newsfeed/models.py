@@ -1,7 +1,6 @@
 import uuid
 
 from django.conf import settings
-from django.core.mail import send_mail
 from django.db import models
 from django.urls import reverse
 from django.utils import timezone
@@ -9,6 +8,11 @@ from django.utils import timezone
 from .constants import ISSUE_TYPE_CHOICES, WEEKLY_ISSUE
 from .querysets import IssueQuerySet, SubscriberQuerySet, PostQuerySet
 from .utils.send_verification import send_subscription_verification_email
+
+
+NEWSFEED_EMAIL_CONFIRMATION_EXPIRE_DAYS = getattr(
+    settings, 'NEWSFEED_EMAIL_CONFIRMATION_EXPIRE_DAYS', 3
+)
 
 
 class Issue(models.Model):
@@ -36,7 +40,7 @@ class Issue(models.Model):
         return self.title
 
     def is_published(self):
-        return self.is_draft == False and self.publish_date <= timezone.now()
+        return not self.is_draft and self.publish_date <= timezone.now()
 
     def get_absolute_url(self):
         return reverse(
@@ -127,9 +131,8 @@ class Subscriber(models.Model):
             return True
 
         expiration_date = (
-            self.verification_sent_date +
-            timezone.timedelta(
-                days=settings.SUBSCRIPTION_EMAIL_CONFIRMATION_EXPIRE_DAYS
+            self.verification_sent_date + timezone.timedelta(
+                days=NEWSFEED_EMAIL_CONFIRMATION_EXPIRE_DAYS
             )
         )
         return expiration_date <= timezone.now()
@@ -161,11 +164,9 @@ class Subscriber(models.Model):
 
     def send_verification_email(self, created):
         minutes_before = timezone.now() - timezone.timedelta(minutes=5)
+        sent_date = self.verification_sent_date
 
-        if (
-            self.verification_sent_date and
-            self.verification_sent_date >= minutes_before
-        ):
+        if sent_date and sent_date >= minutes_before:
             return
 
         if not created:

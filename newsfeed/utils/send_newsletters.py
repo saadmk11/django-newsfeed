@@ -13,6 +13,19 @@ from newsfeed.models import Newsletter, Subscriber
 logger = logging.getLogger(__name__)
 
 
+NEWSFEED_EMAIL_BATCH_WAIT = getattr(
+    settings, 'NEWSFEED_EMAIL_BATCH_WAIT', 5
+)
+NEWSFEED_EMAIL_BATCH_SIZE = getattr(
+    settings, 'NEWSFEED_EMAIL_BATCH_SIZE', 0
+)
+NEWSFEED_SITE_BASE_URL = getattr(
+    settings, 'NEWSFEED_SITE_BASE_URL', ''
+)
+
+EMAIL_HOST_USER = getattr(settings, 'EMAIL_HOST_USER', '')
+
+
 def send_email_newsletter(newsletters=None, respect_schedule=True):
     """
     sends newsletter emails to subscribers.
@@ -79,10 +92,10 @@ def send_email_newsletter(newsletters=None, respect_schedule=True):
                     logger.info(
                         'Waiting %s seconds before sending '
                         'next batch of newsletter for ISSUE # %s',
-                        settings.NEWSLETTER_EMAIL_BATCH_WAIT,
+                        NEWSFEED_EMAIL_BATCH_WAIT,
                         issue_number
                     )
-                    time.sleep(settings.NEWSLETTER_EMAIL_BATCH_WAIT)
+                    time.sleep(NEWSFEED_EMAIL_BATCH_WAIT)
 
         if sent_emails > 0:
             sent_newsletters.append(newsletter.id)
@@ -115,14 +128,14 @@ def render_newsletter(newsletter):
         'short_description': issue.short_description,
         'post_list': issue.posts.visible(),
         'unsubscribe_url': reverse('newsfeed:newsletter_unsubscribe'),
-        'site_url': settings.SITE_BASE_URL
+        'site_url': NEWSFEED_SITE_BASE_URL
     }
 
     html = render_to_string('newsfeed/email/newsletter_email.html', context)
 
     rendered_newsletter = {
         'subject': subject,
-        'html':html
+        'html': html
     }
 
     return rendered_newsletter
@@ -139,7 +152,7 @@ def generate_email_message(to_email, rendered_newsletter, connection):
     message = EmailMessage(
         subject=rendered_newsletter.get('subject'),
         body=rendered_newsletter.get('html'),
-        from_email=settings.EMAIL_HOST_USER, to=[to_email],
+        from_email=EMAIL_HOST_USER, to=[to_email],
         connection=connection
     )
     message.content_subtype = "html"
@@ -157,7 +170,7 @@ def get_subscriber_emails(rendered_newsletter, connection):
     subscriber_emails = Subscriber.objects.subscribed().values_list(
         'email_address', flat=True
     )
-    batch_size = settings.NEWSLETTER_EMAIL_BATCH_SIZE
+    batch_size = NEWSFEED_EMAIL_BATCH_SIZE
 
     # if there is no batch size specified
     # by the user send all in one batch
