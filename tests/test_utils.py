@@ -130,7 +130,7 @@ class SendNewsletterEmailTest(TestCase):
         )
         self.assertFalse(newsletters.exists())
 
-        with self.assertRaises(Exception) as e:
+        with self.assertRaises(Exception):
             send_email_newsletter()
 
         self.assertEqual(len(mail.outbox), 0)
