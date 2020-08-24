@@ -1,6 +1,11 @@
 include CONTRIBUTING.rst
 include LICENSE
 include README.rst
-recursive-include newsfeed *.html *.png *.gif *js *.css *jpg *jpeg *svg *py
+
+recursive-include newsfeed/static *
+recursive-include newsfeed/migrations *
+recursive-include newsfeed/templates *
+recursive-include newsfeed/utils *
+
 global-exclude __pycache__
 global-exclude *.py[co]

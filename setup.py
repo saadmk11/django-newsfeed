@@ -5,7 +5,7 @@ readme = open('README.rst').read()
 
 setup(
     name='django-newsfeed',
-    version='0.1.0',
+    version='0.1.1',
     description="""A news curator and newsletter subscription app for django""",
     long_description=readme,
     author='Maksudul Haque',
@@ -24,8 +24,8 @@ setup(
     zip_safe=False,
     keywords='django-newsfeed news curator newsletter subscription',
     classifiers=[
-        'Development Status :: 3 - Alpha',
-        'Framework :: Django :: 3.1',
+        'Development Status :: 4 - Beta',
+        'Framework :: Django',
         'Intended Audience :: Developers',
         'License :: OSI Approved :: MIT License',
         'Natural Language :: English',
