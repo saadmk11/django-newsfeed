@@ -1,13 +1,13 @@
 <!DOCTYPE html>
 <html>
 <head>
-    <title>Issue #{{ issue_number.issue_number }}</title>
+    <title>Issue #{{ issue.issue_number }}</title>
 </head>
     <body>
-        <h1>Issue #{{ issue_number.issue_number }}</h1>
-        <h3>{{ issue_title }}</h3>
-        <p>{{ short_description }}</p>
-        <p>publish date: {{ publish_date|date:"D d M Y" }}</p>
+        <h1>Issue #{{ issue.issue_number }}</h1>
+        <h3>{{ issue.title }}</h3>
+        <p>{{ issue.short_description }}</p>
+        <p>publish date: {{ issue.publish_date|date:"D d M Y" }}</p>
 
         {% regroup post_list|dictsort:"category.order" by category as category_list %}
 

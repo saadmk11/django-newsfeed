@@ -51,7 +51,7 @@ class SendNewsletterEmailTest(TestCase):
         self.unverified_subscribers = baker.make(
             Subscriber, subscribed=False, verified=False, _quantity=2
         )
-        self.unverified_subscribers = baker.make(
+        self.verified_subscribers = baker.make(
             Subscriber, subscribed=True, verified=True, _quantity=5
         )
         # Issues
@@ -191,7 +191,14 @@ class SendNewsletterEmailTest(TestCase):
     def test_get_subscriber_emails(self):
         rendered = render_newsletter(self.released_newsletter_1)
 
-        email_msg_generator = get_subscriber_emails(rendered, 2, None)
+        emails = [
+            subscriber.email_address
+            for subscriber in self.verified_subscribers
+        ]
+
+        email_msg_generator = get_subscriber_emails(
+            rendered, emails, 2, None
+        )
 
         # total five subscribed emails were added in the setUp()
         self.assertEqual(len(list(next(email_msg_generator))), 2)
@@ -201,7 +208,10 @@ class SendNewsletterEmailTest(TestCase):
     def test_get_subscriber_emails_return_email_message_instances(self):
         rendered = render_newsletter(self.released_newsletter_1)
 
-        email_msg_generator = get_subscriber_emails(rendered, 2, None)
+        email_msg_generator = get_subscriber_emails(
+            rendered, [self.verified_subscribers[0].email_address],
+            2, None
+        )
 
         messages = list(next(email_msg_generator))
 
@@ -211,7 +221,7 @@ class SendNewsletterEmailTest(TestCase):
         Subscriber.objects.all().update(subscribed=False)
         rendered = render_newsletter(self.released_newsletter_1)
 
-        email_msg_generator = get_subscriber_emails(rendered, 0, None)
+        email_msg_generator = get_subscriber_emails(rendered, [], 0, None)
 
         with self.assertRaises(StopIteration):
             next(email_msg_generator)

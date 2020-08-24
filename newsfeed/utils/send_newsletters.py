@@ -35,13 +35,15 @@ def send_email_newsletter(newsletters=None, respect_schedule=True):
             is_sent=False,
             issue__is_draft=False,
             issue__publish_date__lte=now
-        ).select_related('issue').prefetch_related(
-            'issue__posts', 'issue__posts__category'
-        )
+        ).select_related('issue')
 
     if respect_schedule:
         newsletters = newsletters.filter(schedule__lte=now)
 
+    # get subscriber email addresses
+    subscriber_emails = Subscriber.objects.subscribed().values_list(
+        'email_address', flat=True
+    )
     sent_newsletters = []
 
     for newsletter in newsletters:
@@ -58,7 +60,7 @@ def send_email_newsletter(newsletters=None, respect_schedule=True):
         )
 
         for email_messages in get_subscriber_emails(
-            rendered_newsletter, batch_size, connection
+            rendered_newsletter, subscriber_emails, batch_size, connection
         ):
             messages = list(email_messages)
 
@@ -115,13 +117,11 @@ def render_newsletter(newsletter):
     """renders newsletter template and returns html and subject"""
     issue = newsletter.issue
     subject = newsletter.subject
+    posts = issue.posts.visible().select_related('category')
 
     context = {
-        'issue_title': issue.title,
-        'issue_number': issue.issue_number,
-        'publish_date': issue.publish_date,
-        'short_description': issue.short_description,
-        'post_list': issue.posts.visible(),
+        'issue': issue,
+        'post_list': posts,
         'unsubscribe_url': reverse('newsfeed:newsletter_unsubscribe'),
         'site_url': NEWSFEED_SITE_BASE_URL
     }
@@ -155,17 +155,18 @@ def generate_email_message(to_email, rendered_newsletter, connection):
     return message
 
 
-def get_subscriber_emails(rendered_newsletter, batch_size, connection):
+def get_subscriber_emails(
+    rendered_newsletter, subscriber_emails,
+    batch_size, connection
+):
     """
     Yields EmailMessage list in batches
 
     :param rendered_newsletter: newsletter with html and subject
+    :param subscriber_emails: list of subscribed email addresses
     :param batch_size: size of each chunk that the generator will yield
     :param connection: email connection
     """
-    subscriber_emails = Subscriber.objects.subscribed().values_list(
-        'email_address', flat=True
-    )
 
     # if there is no subscriber then stop iteration
     if len(subscriber_emails) == 0:
