@@ -1,25 +1,32 @@
-<h2>Issue #{{ issue_number.issue_number }}</h2>
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Issue #{{ issue_number.issue_number }}</title>
+</head>
+    <body>
+        <h1>Issue #{{ issue_number.issue_number }}</h1>
+        <h3>{{ issue_title }}</h3>
+        <p>{{ short_description }}</p>
+        <p>publish date: {{ publish_date|date:"D d M Y" }}</p>
 
-<h2>{{ issue_title }}</h2>
-<p>{{ short_description }}</p>
-publish date: <b>{{ publish_date|date:"D d M Y" }}</b>
+        {% regroup post_list|dictsort:"category.order" by category as category_list %}
 
-{% regroup post_list|dictsort:"category.order" by category as category_list %}
-
-<ul>
-    {% for category, posts in category_list %}
-        <li><h4>{{ category }}</h4>
         <ul>
-            {% for post in posts %}
-                <li>
-                    <h5><a href="{{ post.source_url }}" target="_blank">{{ post.title }}</a></h5>
-                    <p>{{ post.short_description }}</p>
-                    <p>{{ post.category.name }}</p>
+            {% for category, posts in category_list %}
+                <li><h4>{{ category }}</h4>
+                <ul>
+                    {% for post in posts %}
+                        <li>
+                            <h5><a href="{{ post.source_url }}" target="_blank">{{ post.title }}</a></h5>
+                            <p>{{ post.short_description }}</p>
+                            <p>{{ post.category.name }}</p>
+                        </li>
+                    {% endfor %}
+                </ul>
                 </li>
             {% endfor %}
         </ul>
-        </li>
-    {% endfor %}
-</ul>
 
-<a href="{{ site_url }}{{ unsubscribe_url }}" target="_blank">Unsubscribe</a>
+        <a href="{{ site_url }}{{ unsubscribe_url }}" target="_blank">Unsubscribe</a>
+    </body>
+</html>

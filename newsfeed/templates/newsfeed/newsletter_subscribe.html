@@ -1,6 +1,12 @@
-<form method="post" id="subscriptionForm" data-url="{% url 'newsfeed:newsletter_subscribe' %}">
-    {% csrf_token %}
-    {{ form }}
-    <button type="submit">Subscribe</button>
-</form>
-<div id="subscriptionMessage"></div>
+{% extends 'newsfeed/base.html' %}
+{% load static %}
+
+{% block head_title %}Subscribe{% endblock %}
+
+{% block head_extra %}
+    <script type="text/javascript" src="{% static 'newsfeed/js/newsletter_subscription.js' %}"></script>
+{% endblock %}
+
+{% block content %}
+    {% include 'newsfeed/subscription_form.html' with form=form form_type='subscribe' %}
+{% endblock %}

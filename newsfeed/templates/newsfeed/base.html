@@ -1,0 +1,21 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <title>
+            {% block head_title %}{% endblock %}
+        </title>
+        {% block head_extra %}
+        {% endblock %}
+    </head>
+    <body>
+    {% block body %}
+        {% include 'newsfeed/messages.html' %}
+        {% block content %}
+            <!-- Add content here -->
+        {% endblock %}
+    {% endblock %}
+
+    {% block footer_extra %}
+    {% endblock %}
+    </body>
+</html>

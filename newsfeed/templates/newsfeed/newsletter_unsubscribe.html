@@ -1,6 +1,12 @@
-<form method="post" id="subscriptionForm" data-url="{% url 'newsfeed:newsletter_unsubscribe' %}">
-    {% csrf_token %}
-    {{ form }}
-    <button type="submit">Unsubscribe</button>
-</form>
-<div id="subscriptionMessage"></div>
+{% extends 'newsfeed/base.html' %}
+{% load static %}
+
+{% block head_title %}Unsubscribe{% endblock %}
+
+{% block head_extra %}
+    <script type="text/javascript" src="{% static 'newsfeed/js/newsletter_subscription.js' %}"></script>
+{% endblock %}
+
+{% block content %}
+    {% include 'newsfeed/subscription_form.html' with form=form form_type='unsubscribe' %}
+{% endblock %}

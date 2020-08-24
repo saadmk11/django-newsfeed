@@ -10,8 +10,8 @@ django-newsfeed
 .. image:: https://codecov.io/gh/saadmk11/django-newsfeed/branch/master/graph/badge.svg
     :target: https://codecov.io/gh/saadmk11/django-newsfeed
 
-What is django-newsfeed
-=======================
+What is django-newsfeed?
+========================
 
 ``django-newsfeed`` is a news curator and newsletter subscription package for django.
 It can be used to create a news curator website which sends newsletters to their subscribers

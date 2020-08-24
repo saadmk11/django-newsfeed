@@ -1,0 +1,15 @@
+<form method="post"
+    id="subscriptionForm"
+    data-url="
+        {% if form_type == 'subscribe' %}
+            {% url 'newsfeed:newsletter_subscribe' %}
+        {% else %}
+            {% url 'newsfeed:newsletter_unsubscribe' %}
+        {% endif %}
+    ">
+
+    {% csrf_token %}
+    {{ form }}
+    <button type="submit">{% if form_type == 'subscribe' %}Subscribe{% else %}Unsubscribe{% endif %}</button>
+</form>
+<div id="subscriptionMessage"></div>

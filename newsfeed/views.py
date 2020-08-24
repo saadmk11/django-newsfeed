@@ -53,6 +53,7 @@ class SubscriptionAjaxResponseMixin(FormView):
         if self.request.is_ajax():
             return JsonResponse(form.errors, status=400)
         else:
+            messages.error(self.request, self.message)
             return response
 
     def form_valid(self, form):
@@ -65,6 +66,7 @@ class SubscriptionAjaxResponseMixin(FormView):
             }
             return JsonResponse(data, status=200)
         else:
+            messages.success(self.request, self.message)
             return response
 
 
@@ -84,7 +86,6 @@ class NewsletterSubscribeView(SubscriptionAjaxResponseMixin):
             self.message = (
                 'You have already subscribed to the newsletter.'
             )
-            messages.error(self.request, self.message)
         else:
             subscriber.send_verification_email(created)
             self.success = True
@@ -93,8 +94,6 @@ class NewsletterSubscribeView(SubscriptionAjaxResponseMixin):
                 'Please check your email inbox to confirm '
                 'your subscription to start receiving newsletters.'
             )
-
-            messages.success(self.request, self.message)
 
         return super().form_valid(form)
 
