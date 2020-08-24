@@ -1,4 +1,3 @@
-===============
 django-newsfeed
 ===============
 
@@ -12,3 +11,34 @@ django-newsfeed
     :target: https://codecov.io/gh/saadmk11/django-newsfeed
 
 A news curator and newsletter subscription app for django
+
+What is django-newsfeed
+=======================
+
+``django-newsfeed`` is a news curator and newsletter subscription package for django.
+It can be used to create a news curator website which sends newsletters to their subscribers
+also it can be used to add a news subscription section to your website.
+
+Features
+========
+
+* Create monthly, weekly or daily issues with ``draft`` issue support.
+* Create posts for issues with different categories.
+* Archive and display all of the issues in your website.
+* Newsletter e-mail subscription (``ajax`` support) with e-mail verification.
+* Newsletter e-mail unsubscription (``ajax`` support).
+* Sending newsletters for each issue to all the subscribers.
+* Fully customizable templates.
+* Uses Django's internal tools for sending email.
+* Efficient mass mailing support.
+
+Requirements
+============
+
+* **Python**: 3.6, 3.7
+* **Django**: 2.2, 3.0, 3.1
+
+Documentation
+=============
+
+Coming Soon!
