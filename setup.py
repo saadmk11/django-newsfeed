@@ -8,6 +8,7 @@ setup(
     version='0.1.1',
     description="""A news curator and newsletter subscription app for django""",
     long_description=readme,
+    long_description_content_type='text/markdown',
     author='Maksudul Haque',
     author_email='saad.mk112@gmail.com',
     url='https://github.com/saadmk11/django-newsfeed',
