@@ -116,6 +116,29 @@ class SendNewsletterEmailTest(TestCase):
 
         self.assertTrue(newsletters.exists())
 
+    def test_send_email_newsletter_custom_queryset(self):
+        newsletters = Newsletter.objects.filter(
+            id__in=[
+                self.released_newsletter_1.id,
+                self.released_newsletter_2.id
+            ]
+        )
+        self.assertFalse(newsletters.filter(is_sent=True).exists())
+
+        send_email_newsletter(newsletters=newsletters)
+
+        self.assertEqual(len(mail.outbox), 10)
+        self.assertEqual(
+            mail.outbox[0].subject,
+            self.released_newsletter_1.subject
+        )
+        self.assertEqual(
+            mail.outbox[5].subject,
+            self.released_newsletter_2.subject
+        )
+
+        self.assertTrue(newsletters.filter(is_sent=True).exists())
+
     def test_send_email_newsletter_dont_respect_schedule(self):
         newsletters = Newsletter.objects.filter(
             id__in=[
