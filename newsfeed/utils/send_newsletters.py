@@ -160,11 +160,17 @@ def get_subscriber_emails(rendered_newsletter, batch_size, connection):
     Yields EmailMessage list in batches
 
     :param rendered_newsletter: newsletter with html and subject
+    :param batch_size: size of each chunk that the generator will yield
     :param connection: email connection
     """
     subscriber_emails = Subscriber.objects.subscribed().values_list(
         'email_address', flat=True
     )
+
+    # if there is no subscriber then stop iteration
+    if len(subscriber_emails) == 0:
+        logger.info('No subscriber found.')
+        raise StopIteration
 
     # if there is no batch size specified
     # by the user send all in one batch

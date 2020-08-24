@@ -183,3 +183,12 @@ class SendNewsletterEmailTest(TestCase):
         messages = list(next(email_msg_generator))
 
         self.assertTrue(isinstance(messages[0], mail.EmailMessage))
+
+    def test_get_subscriber_emails_with_zero_subscribers(self):
+        Subscriber.objects.all().update(subscribed=False)
+        rendered = render_newsletter(self.released_newsletter_1)
+
+        email_msg_generator = get_subscriber_emails(rendered, 0, None)
+
+        with self.assertRaises(StopIteration):
+            next(email_msg_generator)
