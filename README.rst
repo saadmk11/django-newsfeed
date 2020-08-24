@@ -10,8 +10,6 @@ django-newsfeed
 .. image:: https://codecov.io/gh/saadmk11/django-newsfeed/branch/master/graph/badge.svg
     :target: https://codecov.io/gh/saadmk11/django-newsfeed
 
-A news curator and newsletter subscription app for django
-
 What is django-newsfeed
 =======================
 
