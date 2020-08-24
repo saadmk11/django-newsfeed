@@ -9,6 +9,7 @@ from model_bakery import baker
 
 from newsfeed.models import Issue, Newsletter, Post
 
+
 class IssueAdminTest(TestCase):
 
     def setUp(self):

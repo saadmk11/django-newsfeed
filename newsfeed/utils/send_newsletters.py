@@ -170,7 +170,7 @@ def get_subscriber_emails(rendered_newsletter, batch_size, connection):
     # if there is no subscriber then stop iteration
     if len(subscriber_emails) == 0:
         logger.info('No subscriber found.')
-        raise StopIteration
+        return
 
     # if there is no batch size specified
     # by the user send all in one batch
