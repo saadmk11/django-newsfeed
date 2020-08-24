@@ -1,18 +1,13 @@
 import uuid
 
-from django.conf import settings
 from django.db import models
 from django.urls import reverse
 from django.utils import timezone
 
+from .app_settings import NEWSFEED_EMAIL_CONFIRMATION_EXPIRE_DAYS
 from .constants import ISSUE_TYPE_CHOICES, WEEKLY_ISSUE
 from .querysets import IssueQuerySet, SubscriberQuerySet, PostQuerySet
 from .utils.send_verification import send_subscription_verification_email
-
-
-NEWSFEED_EMAIL_CONFIRMATION_EXPIRE_DAYS = getattr(
-    settings, 'NEWSFEED_EMAIL_CONFIRMATION_EXPIRE_DAYS', 3
-)
 
 
 class Issue(models.Model):

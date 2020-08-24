@@ -1,22 +1,14 @@
-from django.conf import settings
 from django.contrib import messages
 from django.http import JsonResponse
-from django.urls import reverse_lazy
 from django.views.generic import DetailView, FormView, ListView
 from django.views.generic.detail import SingleObjectMixin
 
+from .app_settings import (
+    NEWSFEED_SUBSCRIPTION_REDIRECT_URL,
+    NEWSFEED_UNSUBSCRIPTION_REDIRECT_URL,
+)
 from .forms import SubscriberEmailForm
 from .models import Issue, Post, Subscriber
-
-
-NEWSFEED_SUBSCRIPTION_REDIRECT_URL = getattr(
-    settings, 'NEWSFEED_SUBSCRIPTION_REDIRECT_URL',
-    reverse_lazy('newsfeed:issue_list')
-)
-NEWSFEED_UNSUBSCRIPTION_REDIRECT_URL = getattr(
-    settings, 'NEWSFEED_UNSUBSCRIPTION_REDIRECT_URL',
-    reverse_lazy('newsfeed:issue_list')
-)
 
 
 class IssueListView(ListView):
