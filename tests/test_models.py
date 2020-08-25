@@ -124,6 +124,17 @@ class SubscriberModelTest(TestCase):
 
         self.assertNotEqual(old_token, self.unverified_subscriber.token)
 
+    @mock.patch('newsfeed.models.uuid')
+    def test_reset_token_with_existing_token(self, uuid):
+        old_token = self.unverified_subscriber.token
+        new_token = 'new_token'
+        uuid.uuid4.side_effect = [old_token, new_token]
+
+        self.unverified_subscriber.reset_token()
+
+        self.assertNotEqual(old_token, self.unverified_subscriber.token)
+        self.assertEqual(new_token, self.unverified_subscriber.token)
+
     def test_subscribe(self):
         self.unverified_subscriber.verification_sent_date = timezone.now()
         self.unverified_subscriber.save()
