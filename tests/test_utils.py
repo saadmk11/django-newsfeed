@@ -1,3 +1,4 @@
+from unittest import mock
 from django.core import mail
 from django.test import TestCase
 from django.utils import timezone
@@ -135,6 +136,15 @@ class SendNewsletterEmailTest(TestCase):
         )
 
         self.assertTrue(newsletters.filter(is_sent=True).exists())
+
+    @mock.patch('newsfeed.utils.send_newsletters.logger')
+    def test_send_email_newsletter_with_error(self, logger):
+        send_newsletter = NewsletterEmailSender()
+        send_newsletter.connection.send_messages = mock.Mock(
+            side_effect=Exception()
+        )
+        send_newsletter.send_emails()
+        logger.error.assert_called()
 
     def test_send_email_newsletter_dont_respect_schedule(self):
         newsletters = Newsletter.objects.filter(

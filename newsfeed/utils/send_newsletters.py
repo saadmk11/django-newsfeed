@@ -19,6 +19,7 @@ logger = logging.getLogger(__name__)
 
 
 class NewsletterEmailSender:
+    """The main class that handles sending email newsletters"""
 
     def __init__(self, newsletters=None, respect_schedule=True):
         self.newsletters = self._get_newsletters(
