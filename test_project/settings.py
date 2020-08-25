@@ -128,26 +128,3 @@ EMAIL_HOST_PASSWORD = 'test_password'
 EMAIL_PORT = 587
 EMAIL_USE_TLS = True
 EMAIL_BACKEND = 'django.core.mail.backends.console.EmailBackend'
-
-# log settings
-# LOGGING = {
-#     'version': 1,
-#     'disable_existing_loggers': False,
-#     'handlers': {
-#         'console': {
-#             'class': 'logging.StreamHandler',
-#         },
-#     },
-#     'root': {
-#         'handlers': ['console'],
-#         'level': 'INFO',
-#     },
-# }
-
-# Newsfeed settings
-# NEWSFEED_EMAIL_CONFIRMATION_EXPIRE_DAYS = 3
-# NEWSFEED_EMAIL_BATCH_SIZE = 0
-# NEWSFEED_EMAIL_BATCH_WAIT = 0
-# NEWSFEED_SITE_BASE_URL = 'http://127.0.0.1:8000'
-# NEWSFEED_SUBSCRIPTION_REDIRECT_URL = '/newsfeed/issues/'
-# NEWSFEED_UNSUBSCRIPTION_REDIRECT_URL = '/newsfeed/issues/'
