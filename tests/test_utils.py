@@ -9,10 +9,7 @@ from newsfeed.utils.send_verification import (
     send_subscription_verification_email
 )
 from newsfeed.utils.send_newsletters import (
-    generate_email_message,
-    get_subscriber_emails,
-    render_newsletter,
-    send_email_newsletter,
+    NewsletterEmailSender, send_email_newsletter
 )
 
 
@@ -169,7 +166,9 @@ class SendNewsletterEmailTest(TestCase):
         self.assertTrue(newsletters.exists())
 
     def test_render_newsletter(self):
-        rendered = render_newsletter(self.released_newsletter_1)
+        rendered = NewsletterEmailSender._render_newsletter(
+            self.released_newsletter_1
+        )
 
         self.assertEqual(
             rendered['subject'],
@@ -178,8 +177,13 @@ class SendNewsletterEmailTest(TestCase):
         self.assertEqual(type(rendered), dict)
 
     def test_generate_email_message(self):
-        rendered = render_newsletter(self.released_newsletter_1)
-        message = generate_email_message('test@test.com', rendered, None)
+        rendered = NewsletterEmailSender._render_newsletter(
+            self.released_newsletter_1
+        )
+        send_newsletter = NewsletterEmailSender()
+        message = send_newsletter._generate_email_message(
+            'test@test.com', rendered
+        )
 
         self.assertEqual(
             message.subject,
@@ -189,15 +193,15 @@ class SendNewsletterEmailTest(TestCase):
         self.assertEqual(message.to, ['test@test.com'])
 
     def test_get_subscriber_emails(self):
-        rendered = render_newsletter(self.released_newsletter_1)
+        rendered = NewsletterEmailSender._render_newsletter(
+            self.released_newsletter_1
+        )
+        send_newsletter = NewsletterEmailSender()
+        # set batch size to 2
+        send_newsletter.batch_size = 2
 
-        emails = [
-            subscriber.email_address
-            for subscriber in self.verified_subscribers
-        ]
-
-        email_msg_generator = get_subscriber_emails(
-            rendered, emails, 2, None
+        email_msg_generator = send_newsletter._get_batch_email_messages(
+            rendered
         )
 
         # total five subscribed emails were added in the setUp()
@@ -206,11 +210,13 @@ class SendNewsletterEmailTest(TestCase):
         self.assertEqual(len(list(next(email_msg_generator))), 1)
 
     def test_get_subscriber_emails_return_email_message_instances(self):
-        rendered = render_newsletter(self.released_newsletter_1)
+        rendered = NewsletterEmailSender._render_newsletter(
+            self.released_newsletter_1
+        )
+        send_newsletter = NewsletterEmailSender()
 
-        email_msg_generator = get_subscriber_emails(
-            rendered, [self.verified_subscribers[0].email_address],
-            2, None
+        email_msg_generator = send_newsletter._get_batch_email_messages(
+            rendered
         )
 
         messages = list(next(email_msg_generator))
@@ -219,9 +225,15 @@ class SendNewsletterEmailTest(TestCase):
 
     def test_get_subscriber_emails_with_zero_subscribers(self):
         Subscriber.objects.all().update(subscribed=False)
-        rendered = render_newsletter(self.released_newsletter_1)
 
-        email_msg_generator = get_subscriber_emails(rendered, [], 0, None)
+        rendered = NewsletterEmailSender._render_newsletter(
+            self.released_newsletter_1
+        )
+        send_newsletter = NewsletterEmailSender()
+
+        email_msg_generator = send_newsletter._get_batch_email_messages(
+            rendered
+        )
 
         with self.assertRaises(StopIteration):
             next(email_msg_generator)
