@@ -154,36 +154,35 @@ class NewsletterEmailSender:
             ):
                 messages = list(email_messages)
 
-                if messages:
-                    try:
-                        # send mass email with one connection open
-                        self.connection.send_messages(messages)
+                try:
+                    # send mass email with one connection open
+                    self.connection.send_messages(messages)
 
-                        logger.info(
-                            'Sent %s newsletters in one batch for ISSUE # %s',
-                            len(messages), issue_number
-                        )
+                    logger.info(
+                        'Sent %s newsletters in one batch for ISSUE # %s',
+                        len(messages), issue_number
+                    )
 
-                        sent_emails += len(messages)
-                    except Exception as e:
-                        # create a new connection on error
-                        self.connection = get_connection()
-                        logger.error(
-                            'An error occurred while sending '
-                            'newsletters for ISSUE # %s '
-                            'newsletter ID: %s '
-                            'EXCEPTION: %s',
-                            issue_number, newsletter.id, e
-                        )
-                    finally:
-                        # Wait sometime before sending next batch
-                        # this is to prevent server overload
-                        logger.info(
-                            'Waiting %s seconds before sending '
-                            'next batch of newsletter for ISSUE # %s',
-                            self.per_batch_wait, issue_number
-                        )
-                        time.sleep(self.per_batch_wait)
+                    sent_emails += len(messages)
+                except Exception as e:
+                    # create a new connection on error
+                    self.connection = get_connection()
+                    logger.error(
+                        'An error occurred while sending '
+                        'newsletters for ISSUE # %s '
+                        'newsletter ID: %s '
+                        'EXCEPTION: %s',
+                        issue_number, newsletter.id, e
+                    )
+                finally:
+                    # Wait sometime before sending next batch
+                    # this is to prevent server overload
+                    logger.info(
+                        'Waiting %s seconds before sending '
+                        'next batch of newsletter for ISSUE # %s',
+                        self.per_batch_wait, issue_number
+                    )
+                    time.sleep(self.per_batch_wait)
 
             if sent_emails > 0:
                 self.sent_newsletters.append(newsletter.id)

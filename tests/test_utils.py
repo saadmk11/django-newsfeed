@@ -1,4 +1,5 @@
 from unittest import mock
+
 from django.core import mail
 from django.test import TestCase
 from django.utils import timezone
@@ -145,6 +146,21 @@ class SendNewsletterEmailTest(TestCase):
         )
         send_newsletter.send_emails()
         logger.error.assert_called()
+
+    def test_send_email_newsletter_with_no_subscribers(self):
+        newsletters = Newsletter.objects.filter(
+            id__in=[
+                self.released_newsletter_1.id,
+                self.released_newsletter_2.id
+            ]
+        )
+        self.assertFalse(newsletters.filter(is_sent=True).exists())
+
+        Subscriber.objects.all().update(subscribed=False)
+        send_newsletter = NewsletterEmailSender()
+        send_newsletter.send_emails()
+
+        self.assertFalse(newsletters.filter(is_sent=True).exists())
 
     def test_send_email_newsletter_dont_respect_schedule(self):
         newsletters = Newsletter.objects.filter(
