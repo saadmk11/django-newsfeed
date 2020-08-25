@@ -74,7 +74,7 @@ class Post(models.Model):
     )
     title = models.CharField(max_length=255)
     source_url = models.URLField()
-    is_visible = models.BooleanField(default=False)
+    is_visible = models.BooleanField(default=True)
     short_description = models.TextField()
     order = models.PositiveIntegerField(default=0)
 

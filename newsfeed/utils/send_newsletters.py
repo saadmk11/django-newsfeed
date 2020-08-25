@@ -23,7 +23,7 @@ class NewsletterEmailSender:
 
     def __init__(self, newsletters=None, respect_schedule=True):
         self.newsletters = self._get_newsletters(
-            newsletters, respect_schedule=respect_schedule
+            newsletters=newsletters, respect_schedule=respect_schedule
         )
         # get subscriber email addresses
         self.subscriber_emails = Subscriber.objects.subscribed().values_list(
@@ -150,7 +150,7 @@ class NewsletterEmailSender:
             )
 
             for email_messages in self._get_batch_email_messages(
-                    rendered_newsletter
+                rendered_newsletter
             ):
                 messages = list(email_messages)
 
