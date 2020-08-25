@@ -156,14 +156,14 @@ class NewsletterEmailSender:
 
                 try:
                     # send mass email with one connection open
-                    self.connection.send_messages(messages)
+                    sent = self.connection.send_messages(messages)
 
                     logger.info(
                         'Sent %s newsletters in one batch for ISSUE # %s',
                         len(messages), issue_number
                     )
 
-                    sent_emails += len(messages)
+                    sent_emails += sent
                 except Exception as e:
                     # create a new connection on error
                     self.connection = get_connection()
