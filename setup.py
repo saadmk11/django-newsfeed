@@ -21,7 +21,7 @@ setup(
         'Django >= 2.2',
     ],
     test_suite="runtests.runtests",
-    license="MIT",
+    license="GNU Public License",
     zip_safe=False,
     keywords='django-newsfeed news curator newsletter subscription',
     classifiers=[
