@@ -1,4 +1,5 @@
 from django.contrib import messages
+from django.db.models import Prefetch
 from django.http import JsonResponse
 from django.views.generic import DetailView, FormView, ListView, TemplateView
 from django.views.generic.detail import SingleObjectMixin
@@ -46,12 +47,13 @@ class LatestIssueView(TemplateView):
     template_name = "newsfeed/latest_issue.html"
 
     def get_context_data(self, **kwargs):
-        latest_issue = Issue.objects.latest('issue_number')
-        posts = latest_issue.posts.visible().select_related('category')
+        prefetch_posts = Post.objects.visible().select_related('category')
+        latest_issue = Issue.objects.prefetch_related(
+            Prefetch('posts', queryset=prefetch_posts)
+        ).first()
 
         context = super().get_context_data(**kwargs)
         context['latest_issue'] = latest_issue
-        context['post_list'] = posts
         return context
 
 

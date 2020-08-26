@@ -127,7 +127,6 @@ class LatestIssueViewTest(TestCase):
         response = self.client.get(reverse('newsfeed:latest_issue'))
 
         self.assertTrue('latest_issue' in response.context)
-        self.assertTrue('posts' in response.context)
         self.assertEqual(response.status_code, 200)
 
     def test_latest_issue_view_uses_correct_template(self):
@@ -136,12 +135,18 @@ class LatestIssueViewTest(TestCase):
         self.assertTemplateUsed(response, 'newsfeed/latest_issue.html')
 
     def test_latest_issue_view_doesnt_show_invisible_posts(self):
+        latest_issue = Issue.objects.latest('issue_number')
+        Post.objects.update(issue=latest_issue)
+
+        response = self.client.get(reverse('newsfeed:latest_issue'))
+        self.assertEqual(response.status_code, 200)
+        self.assertFalse(response.context['latest_issue'].posts.count() == 0)
+
         Post.objects.update(is_visible=False)
 
         response = self.client.get(reverse('newsfeed:latest_issue'))
         self.assertEqual(response.status_code, 200)
-
-        self.assertTrue(len(response.context['posts']) == 0)
+        self.assertTrue(response.context['latest_issue'].posts.count() == 0)
 
     def test_latest_issue_view_shows_latest_issue(self):
         latest_issue = Issue.objects.latest('issue_number')
