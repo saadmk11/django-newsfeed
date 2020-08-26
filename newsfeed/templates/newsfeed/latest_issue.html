@@ -10,5 +10,5 @@
     <p>{{ latest_issue.short_description }}</p>
     publish date: <b>{{ latest_issue.publish_date|date:"D d M Y" }}</b>
 
-    {% include 'newsfeed/issue_posts.html' with posts=posts %}
+    {% include 'newsfeed/issue_posts.html' with posts=post_list %}
 {% endblock %}

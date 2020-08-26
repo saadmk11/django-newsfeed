@@ -51,7 +51,7 @@ class LatestIssueView(TemplateView):
 
         context = super().get_context_data(**kwargs)
         context['latest_issue'] = latest_issue
-        context['posts'] = posts
+        context['post_list'] = posts
         return context
 
 
