@@ -147,7 +147,7 @@ class NewsletterSubscribeViewTest(TestCase):
         self.assertTrue(subscriber.exists())
         self.assertIn(
             'Thank you for subscribing! '
-            'Please check your email inbox to confirm '
+            'Please check your e-mail inbox to confirm '
             'your subscription to start receiving newsletters.',
             message[0]
         )
@@ -206,7 +206,7 @@ class NewsletterSubscribeViewTest(TestCase):
         self.assertTrue(subscriber.exists())
         self.assertIn(
             'Thank you for subscribing! '
-            'Please check your email inbox to confirm '
+            'Please check your e-mail inbox to confirm '
             'your subscription to start receiving newsletters.',
             response_data['message']
         )
@@ -295,7 +295,7 @@ class NewsletterUnsubscribeViewTest(TestCase):
 
         self.assertFalse(subscriber.exists())
         self.assertIn(
-            'Subscriber with this email address does not exist.',
+            'Subscriber with this e-mail address does not exist.',
             message[0]
         )
 
@@ -321,7 +321,7 @@ class NewsletterUnsubscribeViewTest(TestCase):
 
         self.assertFalse(subscriber.exists())
         self.assertIn(
-            'Subscriber with this email address does not exist.',
+            'Subscriber with this e-mail address does not exist.',
             message[0]
         )
 
@@ -393,7 +393,7 @@ class NewsletterUnsubscribeViewTest(TestCase):
         response_data = json.loads(response.content)
 
         self.assertIn(
-            'Subscriber with this email address does not exist.',
+            'Subscriber with this e-mail address does not exist.',
             response_data['message']
         )
         self.assertFalse(response_data['success'])
@@ -416,7 +416,7 @@ class NewsletterUnsubscribeViewTest(TestCase):
         response_data = json.loads(response.content)
 
         self.assertIn(
-            'Subscriber with this email address does not exist.',
+            'Subscriber with this e-mail address does not exist.',
             response_data['message']
         )
         self.assertFalse(response_data['success'])

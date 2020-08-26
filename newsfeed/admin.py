@@ -71,7 +71,7 @@ class NewsletterAdmin(admin.ModelAdmin):
         messages.add_message(
             request,
             messages.SUCCESS,
-            'Successfully sent newsletters(s) to subscribers',
+            'Sending selected newsletters(s) to the subscribers',
         )
 
     send_newsletters.short_description = 'Send newsletters'

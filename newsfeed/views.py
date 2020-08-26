@@ -91,7 +91,7 @@ class NewsletterSubscribeView(SubscriptionAjaxResponseMixin):
             self.success = True
             self.message = (
                 'Thank you for subscribing! '
-                'Please check your email inbox to confirm '
+                'Please check your e-mail inbox to confirm '
                 'your subscription to start receiving newsletters.'
             )
 
@@ -120,7 +120,7 @@ class NewsletterUnsubscribeView(SubscriptionAjaxResponseMixin):
         else:
             self.success = False
             self.message = (
-                'Subscriber with this email address does not exist.'
+                'Subscriber with this e-mail address does not exist.'
             )
             messages.error(self.request, self.message)
 

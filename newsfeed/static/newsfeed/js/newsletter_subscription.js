@@ -1,21 +1,22 @@
 window.addEventListener("load", function () {
-  let form = document.getElementById("subscriptionForm");
-  let messageElement = document.getElementById("subscriptionMessage");
+  let forms = document.querySelectorAll(".subscriptionForm");
 
-  form.addEventListener("submit", function (event) {
-    event.preventDefault();
-    const data = new FormData(form);
+  forms.forEach(function (form) {
+    form.addEventListener("submit", function (event) {
+      event.preventDefault();
+      let data = new FormData(form);
+      let messageElement = form.querySelector(".subscriptionMessage");
 
-    fetch(form.dataset.url, {
-      method: "post",
-      mode: "same-origin",
-      body: data,
-      credentials: "same-origin",
-      headers: {
-        'Accept': "application/json",
-        "X-Requested-With": "XMLHttpRequest",
-      },
-    })
+      fetch(form.action, {
+        method: "post",
+        mode: "same-origin",
+        body: data,
+        credentials: "same-origin",
+        headers: {
+          Accept: "application/json",
+          "X-Requested-With": "XMLHttpRequest",
+        },
+      })
       .then(function (response) {
         response.json().then(function (data) {
           if (response.status !== 200) {
@@ -42,5 +43,6 @@ window.addEventListener("load", function () {
         messageElement.classList.remove("success");
         messageElement.classList.add("error");
       });
+    });
   });
 });

@@ -11,13 +11,13 @@
     {% if subscribed %}
         Subscription confirmed!
     {% else %}
-        Subscription confirmation has link expired or is invalid.
-        Please click on the button below to get e-mail with a new confirmation link.
-        <form method="post" id="subscriptionForm" data-url="{% url 'newsfeed:newsletter_subscribe' %}">
+        Subscription confirmation link has expired or is invalid.
+        Please click on the button below to receive an e-mail with a new confirmation link.
+        <form method="post" class="subscriptionForm" action="{% url 'newsfeed:newsletter_subscribe' %}">
             {% csrf_token %}
             <input type="hidden" name="email_address" required id="id_email_address" value="{{ object.email_address }}">
             <button type="submit">Try Again</button>
         </form>
-        <div id="subscriptionMessage"></div>
+        <div class="subscriptionMessage"></div>
     {% endif %}
 {% endblock %}

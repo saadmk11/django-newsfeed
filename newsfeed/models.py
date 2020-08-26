@@ -29,7 +29,7 @@ class Issue(models.Model):
     objects = IssueQuerySet.as_manager()
 
     class Meta:
-        ordering = ['-publish_date', '-issue_number']
+        ordering = ['-issue_number', '-publish_date']
 
     def __str__(self):
         return self.title
