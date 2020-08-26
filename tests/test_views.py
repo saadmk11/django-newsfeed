@@ -63,7 +63,10 @@ class IssueDetailViewTest(TestCase):
             publish_date=timezone.now() - timezone.timedelta(days=1)
         )
         self.unreleased_issue = baker.make(Issue, is_draft=True)
-        self.posts = baker.make(Post, is_visible=True, _quantity=2)
+        self.posts = baker.make(
+            Post, is_visible=True,
+            issue=self.released_issue, _quantity=2
+        )
 
     def test_issue_detail_view_url_exists(self):
         response = self.client.get(
@@ -106,6 +109,46 @@ class IssueDetailViewTest(TestCase):
             )
         )
         self.assertEqual(response.status_code, 404)
+
+
+class LatestIssueViewTest(TestCase):
+
+    def setUp(self):
+        self.released_issue = baker.make(
+            Issue, is_draft=False, _quantity=2,
+            publish_date=timezone.now() - timezone.timedelta(days=1)
+        )
+        self.posts = baker.make(
+            Post, is_visible=True,
+            _quantity=2, issue=self.released_issue[1]
+        )
+
+    def test_latest_issue_view_url_exists(self):
+        response = self.client.get(reverse('newsfeed:latest_issue'))
+
+        self.assertTrue('latest_issue' in response.context)
+        self.assertTrue('posts' in response.context)
+        self.assertEqual(response.status_code, 200)
+
+    def test_latest_issue_view_uses_correct_template(self):
+        response = self.client.get(reverse('newsfeed:latest_issue'))
+        self.assertEqual(response.status_code, 200)
+        self.assertTemplateUsed(response, 'newsfeed/latest_issue.html')
+
+    def test_latest_issue_view_doesnt_show_invisible_posts(self):
+        Post.objects.update(is_visible=False)
+
+        response = self.client.get(reverse('newsfeed:latest_issue'))
+        self.assertEqual(response.status_code, 200)
+
+        self.assertTrue(len(response.context['posts']) == 0)
+
+    def test_latest_issue_view_shows_latest_issue(self):
+        latest_issue = Issue.objects.latest('issue_number')
+        response = self.client.get(reverse('newsfeed:latest_issue'))
+        self.assertEqual(response.status_code, 200)
+
+        self.assertEqual(response.context['latest_issue'].id, latest_issue.id)
 
 
 class NewsletterSubscribeViewTest(TestCase):

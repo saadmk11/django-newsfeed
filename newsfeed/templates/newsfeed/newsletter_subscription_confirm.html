@@ -3,10 +3,6 @@
 
 {% block head_title %}Confirm Subscription{% endblock %}
 
-{% block head_extra %}
-    <script type="text/javascript" src="{% static 'newsfeed/js/newsletter_subscription.js' %}"></script>
-{% endblock %}
-
 {% block content %}
     {% if subscribed %}
         Subscription confirmed!
@@ -20,4 +16,8 @@
         </form>
         <div class="subscriptionMessage"></div>
     {% endif %}
+{% endblock %}
+
+{% block head_extra %}
+    <script type="text/javascript" src="{% static 'newsfeed/js/newsletter_subscription.js' %}"></script>
 {% endblock %}

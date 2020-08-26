@@ -1,6 +1,6 @@
 from django.contrib import messages
 from django.http import JsonResponse
-from django.views.generic import DetailView, FormView, ListView
+from django.views.generic import DetailView, FormView, ListView, TemplateView
 from django.views.generic.detail import SingleObjectMixin
 
 from .app_settings import (
@@ -39,6 +39,20 @@ class IssueDetailView(SingleObjectMixin, ListView):
 
     def get_queryset(self):
         return self.object.posts.visible().select_related('category')
+
+
+class LatestIssueView(TemplateView):
+    model = Post
+    template_name = "newsfeed/latest_issue.html"
+
+    def get_context_data(self, **kwargs):
+        latest_issue = Issue.objects.latest('issue_number')
+        posts = latest_issue.posts.visible().select_related('category')
+
+        context = super().get_context_data(**kwargs)
+        context['latest_issue'] = latest_issue
+        context['posts'] = posts
+        return context
 
 
 class SubscriptionAjaxResponseMixin(FormView):

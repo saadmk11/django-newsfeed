@@ -1,0 +1,17 @@
+{% regroup posts|dictsort:"category.order" by category as category_list %}
+
+<ul>
+    {% for category, posts in category_list %}
+        <li><h4>{{ category }}</h4>
+            <ul>
+                {% for post in posts %}
+                    <li>
+                        <h5><a href="{{ post.source_url }}" target="_blank">{{ post.title }}</a></h5>
+                        <p>{{ post.short_description }}</p>
+                        <p>{{ post.category.name }}</p>
+                    </li>
+                {% endfor %}
+            </ul>
+        </li>
+    {% endfor %}
+</ul>

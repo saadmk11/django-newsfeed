@@ -6,6 +6,7 @@
 {% block content %}
     {% include 'newsfeed/subscription_form.html' with form=form form_type='subscribe' %}
 {% endblock %}
+
 {% block footer_extra %}
     <script type="text/javascript" src="{% static 'newsfeed/js/newsletter_subscription.js' %}"></script>
 {% endblock %}

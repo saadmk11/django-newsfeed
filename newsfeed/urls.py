@@ -3,6 +3,7 @@ from django.urls import path
 from .views import (
     IssueDetailView,
     IssueListView,
+    LatestIssueView,
     NewsletterSubscribeView,
     NewsletterSubscriptionConfirmView,
     NewsletterUnsubscribeView,
@@ -12,6 +13,7 @@ from .views import (
 app_name = 'newsfeed'
 
 urlpatterns = [
+    path('', LatestIssueView.as_view(), name='latest_issue'),
     path('issues/', IssueListView.as_view(), name='issue_list'),
     path(
         'issues/<slug:issue_number>/',
