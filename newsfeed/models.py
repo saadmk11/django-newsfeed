@@ -178,6 +178,6 @@ class Subscriber(models.Model):
 
     def get_verification_url(self):
         return reverse(
-            'newsfeed:newsletter_subscribe_confirm',
+            'newsfeed:newsletter_subscription_confirm',
             kwargs={'token': self.token}
         )

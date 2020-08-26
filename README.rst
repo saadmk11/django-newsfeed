@@ -50,4 +50,189 @@ The styles in the example project uses ``bootstrap``.
 Documentation
 =============
 
-Coming Soon!
+Installation
+============
+
+Install ``django-newsfeed`` using pip:
+
+.. code-block:: sh
+
+    pip install django-newsfeed
+
+
+Then add ``newsfeed`` to your ``INSTALLED_APPS``:
+
+.. code-block:: python
+
+    INSTALLED_APPS = [
+        ...
+        'newsfeed',
+    ]
+
+Then add ``newsfeed`` to your projects ``urls.py``:
+
+.. code-block:: python
+
+    urlpatterns = [
+        ...
+        path('newsfeed/', include('newsfeed.urls', namespace='newsfeed')),
+        ...
+    ]
+
+Usage
+=====
+**Available views**
+
+We provide these views out of the box:
+
+* **latest_issue:** ``newsfeed/``
+* **issue_list:** ``newsfeed/issues/``
+* **issue_detail:** ``newsfeed/issues/<slug:issue_number>/``
+* **newsletter_subscribe:** ``newsfeed/subscribe/``
+* **newsletter_subscription_confirm:** ``newsfeed/subscribe/confirm/<uuid:token>/``
+* **newsletter_unsubscribe:** ``newsfeed/unsubscribe/``
+
+**Templates**
+
+The basic templates are provided for all the views and emails with ``django-newsfeed``.
+You can override the templates to add your own design.
+
+Just add ``newsfeed`` directory inside your templates directory
+add templates with the same name as the showed tree below.
+more on template overriding on the `django docs`_
+
+.. _django docs: https://docs.djangoproject.com/en/3.1/howto/overriding-templates/
+
+Template Tree for ``django-newfeed``:
+
+.. code-block::
+
+    templates
+        └── newsfeed
+            ├── base.html
+            ├── email
+            │     ├── email_verification.html
+            │     ├── email_verification_subject.txt
+            │     ├── email_verification.txt
+            │     └── newsletter_email.html
+            ├── issue_detail.html
+            ├── issue_list.html
+            ├── issue_posts.html
+            ├── latest_issue.html
+            ├── messages.html
+            ├── newsletter_subscribe.html
+            ├── newsletter_subscription_confirm.html
+            ├── newsletter_unsubscribe.html
+            └── subscription_form.html
+
+**Subscription confirmation Email**
+
+We send subscription confirmation email to the new subscribers.
+you can override these template to change the styles:
+
+.. code-block::
+
+    templates
+        └── newsfeed
+            ├── email
+            │     ├── email_verification.html
+            │     ├── email_verification_subject.txt
+            │     ├── email_verification.txt
+
+
+**Admin Actions**
+
+These actions are available from the admin panel:
+
+* **publish issues:**  The selected issues will be published.
+* **mark issues as draft:**  The selected issues will be marked as draft.
+* **hide posts:**  The selected posts will be hidden from the issues.
+* **make posts visible:**  The selected posts will visible on the issues.
+* **send newsletters:**  Sends selected newsletters to all the subscribers.
+(``send newsletters`` action should be overridden to use a background task queue.
+See the `example project`_ to see an example using celery)
+
+**Send Email Newsletter**
+
+We provide a class to handle sending email newsletters to the subscribers.
+We do not provide any background task queue by default. But it is fairly easy to set it up.
+
+See the `example project`_ to see an example using ``celery`` and ``celery-beat``.
+
+You can override this template to change the style of the newsletter:
+
+.. code-block::
+
+    templates
+        └── newsfeed
+            ├── email
+            │     └── newsletter_email.html
+
+
+.. _example project: https://github.com/saadmk11/test-django-newsfeed
+
+Settings Configuration
+======================
+
+The below settings are available for ``django-newsfeed``.
+Add these settings to your projects ``settings.py`` as required.
+
+``NEWSFEED_SITE_BASE_URL``
+--------------------------
+
+* default: ``http://127.0.0.1:8000`` (your sites URL)
+* required: True
+
+This settings is required. You need to add your websites URL here in production.
+This is used to generate confirmation URL and unsubscribe URL for the emails.
+
+``NEWSFEED_EMAIL_CONFIRMATION_EXPIRE_DAYS``
+-------------------------------------------
+
+* default: 3 (after number of days confirmation link expires)
+* required: False
+
+This settings tells ``django-newsfeed`` to expire the confirmation link in specified number of days.
+
+``NEWSFEED_EMAIL_BATCH_SIZE``
+-----------------------------
+
+* default: 0 (number of emails per batch)
+* required: False
+
+This settings is helpful when there are a lot of subscribers.
+This settings tells ``django-newsfeed`` to send the specified number of emails per batch.
+if its zero (``0``) then all of the emails will be sent together.
+
+``NEWSFEED_EMAIL_BATCH_WAIT``
+-----------------------------
+
+* default: 0 (in seconds)
+* required: False
+
+This settings tells ``django-newsfeed`` how long it should wait between
+each batch of newsletter email sent.
+
+``NEWSFEED_SUBSCRIPTION_REDIRECT_URL``
+--------------------------------------
+
+* default: ``/newsfeed/issues/``
+* required: False
+
+This is only required if you are not using ``ajax`` request on the subscription form.
+The ``JavaScript`` code for ``ajax`` is included with ``django-newsfeed`` and on by default.
+
+``NEWSFEED_UNSUBSCRIPTION_REDIRECT_URL``
+----------------------------------------
+
+* default: ``/newsfeed/issues/``
+* required: False
+
+This is only required if you are not using ``ajax`` request on the unsubscription form.
+The ``JavaScript`` code for ``ajax`` is included with ``django-newsfeed`` and on by default.
+
+Contribute
+==========
+
+See `CONTRIBUTING.rst <https://github.com/saadmk11/django-newsfeed/blob/master/CONTRIBUTING.rst>`_
+for information about contributing to ``django-newsfeed``.

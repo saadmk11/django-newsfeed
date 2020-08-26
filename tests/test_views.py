@@ -495,7 +495,7 @@ class NewsletterSubscriptionConfirmViewTest(TestCase):
     def test_newsfeed_subscribe_view_url_exists(self):
         response = self.client.get(
             reverse(
-                'newsfeed:newsletter_subscribe_confirm',
+                'newsfeed:newsletter_subscription_confirm',
                 kwargs={'token': self.unverified_subscriber.token}
             )
         )
@@ -510,7 +510,7 @@ class NewsletterSubscriptionConfirmViewTest(TestCase):
     def test_newsfeed_subscribe_view_uses_correct_template(self):
         response = self.client.get(
             reverse(
-                'newsfeed:newsletter_subscribe_confirm',
+                'newsfeed:newsletter_subscription_confirm',
                 kwargs={'token': self.verified_subscriber.token}
             )
         )

@@ -27,7 +27,7 @@ urlpatterns = [
     path(
         'subscribe/confirm/<uuid:token>/',
         NewsletterSubscriptionConfirmView.as_view(),
-        name='newsletter_subscribe_confirm'
+        name='newsletter_subscription_confirm'
     ),
     path(
         'unsubscribe/',
