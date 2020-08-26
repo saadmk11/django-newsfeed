@@ -155,6 +155,11 @@ class LatestIssueViewTest(TestCase):
 
         self.assertEqual(response.context['latest_issue'].id, latest_issue.id)
 
+    def test_latest_issue_view_with_no_issues(self):
+        Issue.objects.all().delete()
+        response = self.client.get(reverse('newsfeed:latest_issue'))
+        self.assertEqual(response.status_code, 200)
+
 
 class NewsletterSubscribeViewTest(TestCase):
 
