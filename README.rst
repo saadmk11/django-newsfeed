@@ -21,7 +21,7 @@ Features
 ========
 
 * Create monthly, weekly or daily issues with ``draft`` issue support.
-* Create posts for issues with different categories.
+* Create posts with different categories.
 * Archive and display all of the issues in your website.
 * Newsletter e-mail subscription (``ajax`` support) with e-mail verification.
 * Newsletter e-mail unsubscription (``ajax`` support).
@@ -35,6 +35,17 @@ Requirements
 
 * **Python**: 3.6, 3.7
 * **Django**: 2.2, 3.0, 3.1
+
+Example Project
+===============
+
+You can view the example project for this package `here`_.
+This is a news-curator and newsletter subscription application that only uses this package.
+It also uses ``celery``, ``celery-beat`` and ``redis`` to send email newsletters in the background.
+The styles in the example project uses ``bootstrap``.
+
+.. _here: https://github.com/saadmk11/test-django-newsfeed
+
 
 Documentation
 =============
