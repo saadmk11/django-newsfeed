@@ -10,6 +10,10 @@ django-newsfeed
 .. image:: https://codecov.io/gh/saadmk11/django-newsfeed/branch/master/graph/badge.svg
     :target: https://codecov.io/gh/saadmk11/django-newsfeed
 
+.. image:: https://github.com/saadmk11/django-newsfeed/workflows/Changelog%20CI/badge.svg
+    :target: https://github.com/saadmk11/changelog-ci
+
+
 What is django-newsfeed?
 ========================
 
