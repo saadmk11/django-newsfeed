@@ -1,5 +1,5 @@
 codecov>=2.0.0
-coverage==5.2.1
+coverage==5.3
 flake8>=2.1.0
 model-bakery==1.1.1
 tox>=1.7.0
