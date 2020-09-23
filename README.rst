@@ -235,6 +235,32 @@ The ``JavaScript`` code for ``ajax`` is included with ``django-newsfeed`` and on
 This is only required if you are not using ``ajax`` request on the unsubscription form.
 The ``JavaScript`` code for ``ajax`` is included with ``django-newsfeed`` and on by default.
 
+
+Signals
+=======
+
+``django-newsfeed`` sends several signals for various actions.
+You can add ``receivers`` to listen to the signals and
+add your own functionality after each signal is sent.
+To learn more about ``signals`` refer to django `Signals Documentation`_.
+
+.. _Signals Documentation: https://docs.djangoproject.com/en/3.1/topics/signals/
+
+
+Subscriber Signals
+------------------
+
+
+* ``newsfeed.signals.email_verification_sent(instance)``
+    Sent after email verification is sent, with ``Subscriber`` instance.
+
+* ``newsfeed.signals.subscribed(instance)``
+    Sent after subscription is confirmed, with ``Subscriber`` instance.
+
+* ``newsfeed.signals.unsubscribed(instance)``
+    Sent after unsubscription is successful, with ``Subscriber`` instance.
+
+
 Contribute
 ==========
 

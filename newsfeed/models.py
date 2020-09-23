@@ -4,6 +4,7 @@ from django.db import models
 from django.urls import reverse
 from django.utils import timezone
 
+from . import signals
 from .app_settings import NEWSFEED_EMAIL_CONFIRMATION_EXPIRE_DAYS
 from .constants import ISSUE_TYPE_CHOICES, WEEKLY_ISSUE
 from .querysets import IssueQuerySet, SubscriberQuerySet, PostQuerySet
@@ -148,6 +149,10 @@ class Subscriber(models.Model):
             self.subscribed = True
             self.save()
 
+            signals.subscribed.send(
+                sender=self.__class__, instance=self
+            )
+
             return True
 
     def unsubscribe(self):
@@ -155,6 +160,10 @@ class Subscriber(models.Model):
             self.subscribed = False
             self.verified = False
             self.save()
+
+            signals.unsubscribed.send(
+                sender=Subscriber, instance=self
+            )
 
             return True
 
@@ -174,6 +183,9 @@ class Subscriber(models.Model):
 
         send_subscription_verification_email(
             self.get_verification_url(), self.email_address
+        )
+        signals.email_verification_sent.send(
+            sender=self.__class__, instance=self
         )
 
     def get_verification_url(self):

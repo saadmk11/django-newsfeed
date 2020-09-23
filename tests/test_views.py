@@ -9,6 +9,7 @@ from django.utils import timezone
 from model_bakery import baker
 
 from newsfeed.models import Issue, Post, Subscriber
+from newsfeed import signals
 
 
 class IssueListViewTest(TestCase):
@@ -167,6 +168,13 @@ class NewsletterSubscribeViewTest(TestCase):
         self.verified_subscriber = baker.make(
             Subscriber, subscribed=True, verified=True
         )
+        self.mock_receiver = mock.Mock()
+        self.email_verification_sent_signal = signals.email_verification_sent
+
+        self.email_verification_sent_signal.connect(self.mock_receiver)
+
+    def tearDown(self):
+        self.email_verification_sent_signal.disconnect(self.mock_receiver)
 
     def test_newsfeed_subscribe_view_url_exists(self):
         response = self.client.get(reverse('newsfeed:newsletter_subscribe'))
@@ -179,7 +187,7 @@ class NewsletterSubscribeViewTest(TestCase):
             response, 'newsfeed/newsletter_subscribe.html'
         )
 
-    @mock.patch('newsfeed.models.Subscriber.send_verification_email')
+    @mock.patch('newsfeed.models.send_subscription_verification_email')
     def test_newsfeed_subscribe_view_success(self, send_verification_email):
         response = self.client.post(
             reverse('newsfeed:newsletter_subscribe'),
@@ -195,18 +203,26 @@ class NewsletterSubscribeViewTest(TestCase):
             for m in get_messages(response.wsgi_request)
         ][0]
 
-        subscriber = Subscriber.objects.filter(email_address="test@test.com")
+        subscribers = Subscriber.objects.filter(email_address="test@test.com")
 
-        self.assertTrue(subscriber.exists())
+        self.assertTrue(subscribers.exists())
+        subscriber = subscribers.first()
         self.assertIn(
             'Thank you for subscribing! '
             'Please check your e-mail inbox to confirm '
             'your subscription to start receiving newsletters.',
             message[0]
         )
-        send_verification_email.assert_called_once_with(True)
+        send_verification_email.assert_called_once_with(
+            subscriber.get_verification_url(), subscriber.email_address
+        )
+        self.mock_receiver.assert_called_once_with(
+            sender=Subscriber,
+            instance=subscriber,
+            signal=self.email_verification_sent_signal,
+        )
 
-    @mock.patch('newsfeed.models.Subscriber.send_verification_email')
+    @mock.patch('newsfeed.models.send_subscription_verification_email')
     def test_newsfeed_subscribe_view_already_subscribed(
         self, send_verification_email
     ):
@@ -228,8 +244,9 @@ class NewsletterSubscribeViewTest(TestCase):
             'You have already subscribed to the newsletter.', message[0]
         )
         send_verification_email.assert_not_called()
+        self.mock_receiver.assert_not_called()
 
-    @mock.patch('newsfeed.models.Subscriber.send_verification_email')
+    @mock.patch('newsfeed.models.send_subscription_verification_email')
     def test_newsfeed_subscribe_view_invalid_email(
         self, send_verification_email
     ):
@@ -240,8 +257,9 @@ class NewsletterSubscribeViewTest(TestCase):
 
         self.assertEqual(response.status_code, 200)
         send_verification_email.assert_not_called()
+        self.mock_receiver.assert_not_called()
 
-    @mock.patch('newsfeed.models.Subscriber.send_verification_email')
+    @mock.patch('newsfeed.models.send_subscription_verification_email')
     def test_newsfeed_subscribe_view_success_ajax(
         self, send_verification_email
     ):
@@ -253,10 +271,11 @@ class NewsletterSubscribeViewTest(TestCase):
 
         self.assertEqual(response.status_code, 200)
 
-        subscriber = Subscriber.objects.filter(email_address="test@test.com")
+        subscribers = Subscriber.objects.filter(email_address="test@test.com")
         response_data = json.loads(response.content)
 
-        self.assertTrue(subscriber.exists())
+        self.assertTrue(subscribers.exists())
+        subscriber = subscribers.first()
         self.assertIn(
             'Thank you for subscribing! '
             'Please check your e-mail inbox to confirm '
@@ -264,9 +283,16 @@ class NewsletterSubscribeViewTest(TestCase):
             response_data['message']
         )
         self.assertTrue(response_data['success'])
-        send_verification_email.assert_called_once_with(True)
+        send_verification_email.assert_called_once_with(
+            subscriber.get_verification_url(), subscriber.email_address
+        )
+        self.mock_receiver.assert_called_once_with(
+            sender=Subscriber,
+            instance=subscriber,
+            signal=self.email_verification_sent_signal,
+        )
 
-    @mock.patch('newsfeed.models.Subscriber.send_verification_email')
+    @mock.patch('newsfeed.models.send_subscription_verification_email')
     def test_newsfeed_subscribe_view_already_subscribed_ajax(
         self, send_verification_email
     ):
@@ -286,8 +312,9 @@ class NewsletterSubscribeViewTest(TestCase):
         )
         self.assertFalse(response_data['success'])
         send_verification_email.assert_not_called()
+        self.mock_receiver.assert_not_called()
 
-    @mock.patch('newsfeed.models.Subscriber.send_verification_email')
+    @mock.patch('newsfeed.models.send_subscription_verification_email')
     def test_newsfeed_subscribe_view_invalid_email_ajax(
         self, send_verification_email
     ):
@@ -306,6 +333,7 @@ class NewsletterSubscribeViewTest(TestCase):
             response_data
         )
         send_verification_email.assert_not_called()
+        self.mock_receiver.assert_not_called()
 
 
 class NewsletterUnsubscribeViewTest(TestCase):
@@ -317,6 +345,13 @@ class NewsletterUnsubscribeViewTest(TestCase):
         self.unsubscribed_email = baker.make(
             Subscriber, subscribed=False, verified=False
         )
+        self.mock_receiver = mock.Mock()
+        self.unsubscribed_signal = signals.unsubscribed
+
+        self.unsubscribed_signal.connect(self.mock_receiver)
+
+    def tearDown(self):
+        self.unsubscribed_signal.disconnect(self.mock_receiver)
 
     def test_newsfeed_unsubscribe_view_url_exists(self):
         response = self.client.get(reverse('newsfeed:newsletter_unsubscribe'))
@@ -351,6 +386,7 @@ class NewsletterUnsubscribeViewTest(TestCase):
             'Subscriber with this e-mail address does not exist.',
             message[0]
         )
+        self.mock_receiver.assert_not_called()
 
     def test_newsfeed_unsubscribe_view_unsubscribed_email(self):
         response = self.client.post(
@@ -377,6 +413,7 @@ class NewsletterUnsubscribeViewTest(TestCase):
             'Subscriber with this e-mail address does not exist.',
             message[0]
         )
+        self.mock_receiver.assert_not_called()
 
     def test_newsfeed_unsubscribe_view_success(self):
         response = self.client.post(
@@ -401,6 +438,11 @@ class NewsletterUnsubscribeViewTest(TestCase):
             'You have successfully unsubscribed from the newsletter.',
             message[0]
         )
+        self.mock_receiver.assert_called_once_with(
+            sender=Subscriber,
+            instance=self.verified_subscriber,
+            signal=self.unsubscribed_signal,
+        )
 
     def test_newsfeed_unsubscribe_view_invalid_email(self):
         response = self.client.post(
@@ -409,6 +451,7 @@ class NewsletterUnsubscribeViewTest(TestCase):
         )
 
         self.assertEqual(response.status_code, 200)
+        self.mock_receiver.assert_not_called()
 
     def test_newsfeed_unsubscribe_view_success_ajax(self):
         response = self.client.post(
@@ -431,6 +474,12 @@ class NewsletterUnsubscribeViewTest(TestCase):
         )
         self.assertTrue(response_data['success'])
 
+        self.mock_receiver.assert_called_once_with(
+            sender=Subscriber,
+            instance=self.verified_subscriber,
+            signal=self.unsubscribed_signal,
+        )
+
     def test_newsfeed_unsubscribe_view_subscriber_does_not_exist_ajax(self):
         response = self.client.post(
             reverse('newsfeed:newsletter_unsubscribe'),
@@ -450,6 +499,7 @@ class NewsletterUnsubscribeViewTest(TestCase):
             response_data['message']
         )
         self.assertFalse(response_data['success'])
+        self.mock_receiver.assert_not_called()
 
     def test_newsfeed_unsubscribe_view_unsubscribed_email_ajax(self):
         response = self.client.post(
@@ -473,6 +523,7 @@ class NewsletterUnsubscribeViewTest(TestCase):
             response_data['message']
         )
         self.assertFalse(response_data['success'])
+        self.mock_receiver.assert_not_called()
 
     def test_newsfeed_unsubscribe_view_invalid_email_ajax(self):
         response = self.client.post(
@@ -489,6 +540,7 @@ class NewsletterUnsubscribeViewTest(TestCase):
             {'email_address': ['Enter a valid email address.']},
             response_data
         )
+        self.mock_receiver.assert_not_called()
 
 
 class NewsletterSubscriptionConfirmViewTest(TestCase):
@@ -501,6 +553,13 @@ class NewsletterSubscriptionConfirmViewTest(TestCase):
             Subscriber, subscribed=False, verified=False,
             verification_sent_date=timezone.now()
         )
+        self.mock_receiver = mock.Mock()
+        self.subscribed_signal = signals.subscribed
+
+        self.subscribed_signal.connect(self.mock_receiver)
+
+    def tearDown(self):
+        self.subscribed_signal.disconnect(self.mock_receiver)
 
     def test_newsfeed_subscribe_view_url_exists(self):
         response = self.client.get(
@@ -517,7 +576,7 @@ class NewsletterSubscriptionConfirmViewTest(TestCase):
             response, 'newsfeed/newsletter_subscription_confirm.html'
         )
 
-    def test_newsfeed_subscribe_view_uses_correct_template(self):
+    def test_newsfeed_subscribe_confirm_view_failed(self):
         response = self.client.get(
             reverse(
                 'newsfeed:newsletter_subscription_confirm',
@@ -525,3 +584,20 @@ class NewsletterSubscriptionConfirmViewTest(TestCase):
             )
         )
         self.assertEqual(response.status_code, 404)
+
+        self.mock_receiver.assert_not_called()
+
+    def test_newsfeed_subscribe_confirm_view_success(self):
+        response = self.client.get(
+            reverse(
+                'newsfeed:newsletter_subscription_confirm',
+                kwargs={'token': self.unverified_subscriber.token}
+            )
+        )
+        self.assertEqual(response.status_code, 200)
+
+        self.mock_receiver.assert_called_once_with(
+            sender=Subscriber,
+            instance=self.unverified_subscriber,
+            signal=self.subscribed_signal,
+        )
