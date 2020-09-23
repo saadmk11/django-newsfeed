@@ -251,13 +251,13 @@ Subscriber Signals
 ------------------
 
 
-- ``newsfeed.signals.email_verification_sent(instance)``
+* ``newsfeed.signals.email_verification_sent(instance)``
     Sent after email verification is sent, with ``Subscriber`` instance.
 
-- ``newsfeed.signals.subscribed(instance)``
+* ``newsfeed.signals.subscribed(instance)``
     Sent after subscription is confirmed, with ``Subscriber`` instance.
 
-- ``newsfeed.signals.unsubscribed(instance)``
+* ``newsfeed.signals.unsubscribed(instance)``
     Sent after unsubscription is successful, with ``Subscriber`` instance.
 
 
