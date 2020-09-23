@@ -239,8 +239,12 @@ The ``JavaScript`` code for ``ajax`` is included with ``django-newsfeed`` and on
 Signals
 =======
 
-``django-newsfeed`` sends several signals for various actions. You can add ``receivers``
-to add your own functionality after each signal is sent.
+``django-newsfeed`` sends several signals for various actions.
+You can add ``receivers`` to listen to the signals and
+add your own functionality after each signal is sent.
+To learn more about ``signals`` refer to django `Signals Documentation`_.
+
+.. _Signals Documentation: https://docs.djangoproject.com/en/3.1/topics/signals/
 
 
 Subscriber Signals
