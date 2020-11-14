@@ -3,6 +3,7 @@ on: [push, pull_request]
 
 jobs:
   tests:
+    name: Python ${{ matrix.python-version }}
     runs-on: ubuntu-latest
     strategy:
       fail-fast: false
@@ -22,6 +23,9 @@ jobs:
       - name: Python version
         run: python --version
       - name: Run tox
-        run: python -m tox
+        run: |
+          python -m pip --version
+          python -m tox --version
+          python -m tox -f py$(python --version 2>&1 | cut -c 8,10)
       - name: Send coverage results
         uses: codecov/codecov-action@v1
