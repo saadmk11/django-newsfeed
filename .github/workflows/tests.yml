@@ -20,6 +20,7 @@ jobs:
       - name: Install test dependencies
         run: python -m pip install -r requirements_test.txt
       - name: Run tox
+        run: python --version
         run: python -m tox
       - name: Send coverage results
         uses: codecov/codecov-action@v1
