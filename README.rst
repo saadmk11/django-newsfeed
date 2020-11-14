@@ -4,8 +4,8 @@ django-newsfeed
 .. image:: https://badge.fury.io/py/django-newsfeed.svg
     :target: https://badge.fury.io/py/django-newsfeed
 
-.. image:: https://travis-ci.com/saadmk11/django-newsfeed.svg?branch=master
-    :target: https://travis-ci.com/saadmk11/django-newsfeed
+.. image:: https://github.com/saadmk11/django-newsfeed/workflows/Django%20Tests/badge.svg
+    :target: https://github.com/saadmk11/django-newsfeed/actions
 
 .. image:: https://codecov.io/gh/saadmk11/django-newsfeed/branch/master/graph/badge.svg
     :target: https://codecov.io/gh/saadmk11/django-newsfeed
