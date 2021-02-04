@@ -132,13 +132,11 @@ class NewsletterUnsubscribeView(SubscriptionAjaxResponseMixin):
             self.message = (
                 'You have successfully unsubscribed from the newsletter.'
             )
-            messages.success(self.request, self.message)
         else:
             self.success = False
             self.message = (
                 'Subscriber with this e-mail address does not exist.'
             )
-            messages.error(self.request, self.message)
 
         return super().form_valid(form)
 
