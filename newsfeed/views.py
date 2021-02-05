@@ -108,7 +108,7 @@ class NewsletterSubscribeView(SubscriptionAjaxResponseMixin):
             self.message = (
                 'Thank you for subscribing! '
                 'Please check your e-mail inbox to confirm '
-                'your subscription to start receiving newsletters.'
+                'your subscription and start receiving newsletters.'
             )
 
         return super().form_valid(form)
