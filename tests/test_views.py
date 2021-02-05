@@ -210,7 +210,7 @@ class NewsletterSubscribeViewTest(TestCase):
         self.assertIn(
             'Thank you for subscribing! '
             'Please check your e-mail inbox to confirm '
-            'your subscription to start receiving newsletters.',
+            'your subscription and start receiving newsletters.',
             message[0]
         )
         send_verification_email.assert_called_once_with(
@@ -279,7 +279,7 @@ class NewsletterSubscribeViewTest(TestCase):
         self.assertIn(
             'Thank you for subscribing! '
             'Please check your e-mail inbox to confirm '
-            'your subscription to start receiving newsletters.',
+            'your subscription and start receiving newsletters.',
             response_data['message']
         )
         self.assertTrue(response_data['success'])
