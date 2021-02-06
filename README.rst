@@ -37,7 +37,7 @@ Features
 Requirements
 ============
 
-* **Python**: 3.6, 3.7
+* **Python**: 3.6, 3.7, 3.8, 3.9
 * **Django**: 2.2, 3.0, 3.1
 
 Example Project
@@ -266,3 +266,11 @@ Contribute
 
 See `CONTRIBUTING.rst <https://github.com/saadmk11/django-newsfeed/blob/master/CONTRIBUTING.rst>`_
 for information about contributing to ``django-newsfeed``.
+
+
+License
+=======
+
+The code in this project is released under the `GNU General Public License v3.0`_
+
+.. _GNU General Public License v3.0: https://github.com/saadmk11/django-newsfeed/blob/master/LICENSE
