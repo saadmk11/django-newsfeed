@@ -40,7 +40,7 @@ jobs:
 
       - name: Run tests with Python ${{ matrix.python-version }} and Django ${{ matrix.django-version }}
         env:
-          TOX_ENV: py${{ matrix.python-version}}-django${{ matrix.django }} | tr -d .
+          TOX_ENV: $("py${{ matrix.python-version}}-django${{ matrix.django }}" | tr -d .)
         run: python -m tox -e $TOX_ENV
 
       - name: Code Coverage
