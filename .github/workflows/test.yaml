@@ -1,4 +1,4 @@
-name: Run Django Test Suite
+name: Django Tests
 
 on:
   push:
@@ -41,7 +41,6 @@ jobs:
       - name: Run tests with Python ${{ matrix.python-version }} and Django ${{ matrix.django-version }}
         run: |
           TOX_ENV=$(echo "py${{ matrix.python-version}}-django${{ matrix.django-version}}" | tr -d .)
-          echo $TOX_ENV
           python -m tox -e $TOX_ENV
 
       - name: Publish coverage results
