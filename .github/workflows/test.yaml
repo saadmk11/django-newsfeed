@@ -39,9 +39,10 @@ jobs:
           python -m pip install -r requirements_test.txt
 
       - name: Run tests with Python ${{ matrix.python-version }} and Django ${{ matrix.django-version }}
-        env:
-          TOX_ENV: $("py${{ matrix.python-version}}-django${{ matrix.django }}" | tr -d .)
-        run: python -m tox -e $TOX_ENV
+        run: |
+          export TOX_ENV=$("py${{ matrix.python-version}}-django${{ matrix.django }}" | tr -d .)
+          echo $TOX_ENV
+          python -m tox -e $TOX_ENV
 
       - name: Code Coverage
         run: |
