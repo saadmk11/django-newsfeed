@@ -44,12 +44,6 @@ jobs:
           echo $TOX_ENV
           python -m tox -e $TOX_ENV
 
-      - name: Code Coverage
-        run: |
-          coverage combine
-          coverage report -m
-          coverage html
-
       - name: Publish coverage results
         uses: codecov/codecov-action@v1
 
