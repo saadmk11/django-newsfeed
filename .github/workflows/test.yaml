@@ -40,7 +40,7 @@ jobs:
 
       - name: Run tests with Python ${{ matrix.python-version }} and Django ${{ matrix.django-version }}
         run: |
-          export TOX_ENV=$("py${{ matrix.python-version}}-django${{ matrix.django }}" | tr -d .)
+          TOX_ENV=$(echo "py${{ matrix.python-version}}-django${{ matrix.python-version}}" | tr -d .)
           echo $TOX_ENV
           python -m tox -e $TOX_ENV
 
