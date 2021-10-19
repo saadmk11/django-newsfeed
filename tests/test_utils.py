@@ -2,11 +2,14 @@ from unittest import mock
 
 from django.core import mail
 from django.test import TestCase
+from django.test.client import RequestFactory
+from django.urls import reverse
 from django.utils import timezone
 
 from model_bakery import baker
 
 from newsfeed.models import Issue, Subscriber, Newsletter
+from newsfeed.utils.check_ajax import is_ajax
 from newsfeed.utils.send_verification import (
     send_subscription_verification_email
 )
@@ -263,3 +266,23 @@ class SendNewsletterEmailTest(TestCase):
 
         with self.assertRaises(StopIteration):
             next(email_msg_generator)
+
+
+class CheckAjaxTest(TestCase):
+
+    def test_request_is_ajax(self):
+        factory = RequestFactory()
+        request = factory.get(
+            reverse('newsfeed:newsletter_subscribe'),
+            data={"email_address": 'test@test.com'},
+            HTTP_X_REQUESTED_WITH='XMLHttpRequest'
+        )
+        self.assertTrue(is_ajax(request))
+
+    def test_request_is_not_ajax(self):
+        factory = RequestFactory()
+        request = factory.get(
+            reverse('newsfeed:newsletter_subscribe'),
+            data={"email_address": 'test@test.com'}
+        )
+        self.assertFalse(is_ajax(request))
