@@ -68,7 +68,10 @@ class SubscriptionAjaxResponseMixin(FormView):
         response = super().form_invalid(form)
 
         if is_ajax(self.request):
-            return JsonResponse(form.errors, status=400)
+            return JsonResponse(
+                form.errors.get_json_data(),
+                status=400
+            )
         else:
             messages.error(self.request, self.message)
             return response
