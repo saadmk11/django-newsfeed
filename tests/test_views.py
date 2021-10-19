@@ -329,7 +329,14 @@ class NewsletterSubscribeViewTest(TestCase):
         response_data = json.loads(response.content)
 
         self.assertEqual(
-            {'email_address': ['Enter a valid email address.']},
+            {
+                'email_address': [
+                    {
+                        'code': 'invalid',
+                        'message': 'Enter a valid email address.'
+                    }
+                ]
+            },
             response_data
         )
         send_verification_email.assert_not_called()
@@ -537,7 +544,14 @@ class NewsletterUnsubscribeViewTest(TestCase):
         response_data = json.loads(response.content)
 
         self.assertEqual(
-            {'email_address': ['Enter a valid email address.']},
+            {
+                'email_address': [
+                    {
+                        'code': 'invalid',
+                        'message': 'Enter a valid email address.'
+                    }
+                ]
+            },
             response_data
         )
         self.mock_receiver.assert_not_called()
