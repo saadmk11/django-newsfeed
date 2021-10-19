@@ -1,3 +1,28 @@
+# Version: 0.8.6
+
+* [#42](https://github.com/saadmk11/django-newsfeed/pull/42): Bump django from 3.1.8 to 3.1.9
+* [#33](https://github.com/saadmk11/django-newsfeed/pull/33): Bump django from 3.1.6 to 3.1.7
+* [#32](https://github.com/saadmk11/django-newsfeed/pull/32): Bump django from 3.1.5 to 3.1.6
+* [#30](https://github.com/saadmk11/django-newsfeed/pull/30): Add License and supported python version in the README.rst
+* [#28](https://github.com/saadmk11/django-newsfeed/pull/28): Improve Subscription Success Message
+* [#29](https://github.com/saadmk11/django-newsfeed/pull/29): Add django 3.2 and python 3.8, 3.9 in the test suite
+* [#27](https://github.com/saadmk11/django-newsfeed/pull/27): Bump Changelog-CI version to 0.7.0
+* [#34](https://github.com/saadmk11/django-newsfeed/pull/34): Bump coverage from 5.4 to 5.5
+* [#39](https://github.com/saadmk11/django-newsfeed/pull/39): Bump model-bakery from 1.3.0 to 1.3.1
+* [#35](https://github.com/saadmk11/django-newsfeed/pull/35): Bump django from 3.1.7 to 3.1.8
+* [#36](https://github.com/saadmk11/django-newsfeed/pull/36): Use GitHub Actions to Run Django Tests and Remove Travis CI
+* [#38](https://github.com/saadmk11/django-newsfeed/pull/38): Bump model-bakery from 1.2.1 to 1.3.0
+* [#44](https://github.com/saadmk11/django-newsfeed/pull/44): Bump model-bakery from 1.3.1 to 1.3.2
+* [#46](https://github.com/saadmk11/django-newsfeed/pull/46): Bump django from 3.1.9 to 3.2.6
+* [#47](https://github.com/saadmk11/django-newsfeed/pull/47): Bump django from 3.2.6 to 3.2.7
+* [#53](https://github.com/saadmk11/django-newsfeed/pull/53): Added Bug Report Issue Template
+* [#54](https://github.com/saadmk11/django-newsfeed/pull/54): Feature Request Issue Template
+* [#55](https://github.com/saadmk11/django-newsfeed/pull/55): Update Test Project Settings With `DEFAULT_AUTO_FIELD`
+* [#56](https://github.com/saadmk11/django-newsfeed/pull/56): Add Custom `is_ajax()` function to check if request is ajax
+* [#49](https://github.com/saadmk11/django-newsfeed/pull/49): Bump model-bakery from 1.3.2 to 1.3.3
+* [#51](https://github.com/saadmk11/django-newsfeed/pull/51): Bump django from 3.2.7 to 3.2.8
+
+
 # Version: 0.8.4
 
 * [#23](https://github.com/saadmk11/django-newsfeed/pull/23): Bump django from 3.1.4 to 3.1.5
