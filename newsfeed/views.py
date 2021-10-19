@@ -10,6 +10,7 @@ from .app_settings import (
 )
 from .forms import SubscriberEmailForm
 from .models import Issue, Post, Subscriber
+from .utils.check_ajax import is_ajax
 
 
 class IssueListView(ListView):
@@ -66,7 +67,7 @@ class SubscriptionAjaxResponseMixin(FormView):
     def form_invalid(self, form):
         response = super().form_invalid(form)
 
-        if self.request.is_ajax():
+        if is_ajax(self.request):
             return JsonResponse(form.errors, status=400)
         else:
             messages.error(self.request, self.message)
@@ -75,7 +76,7 @@ class SubscriptionAjaxResponseMixin(FormView):
     def form_valid(self, form):
         response = super().form_valid(form)
 
-        if self.request.is_ajax():
+        if is_ajax(self.request):
             data = {
                 'message': self.message,
                 'success': self.success
