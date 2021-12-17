@@ -1,3 +1,11 @@
+# Version: 0.8.7
+
+* [#59](https://github.com/saadmk11/django-newsfeed/pull/59): Bump django from 3.2.8 to 3.2.9
+* [#63](https://github.com/saadmk11/django-newsfeed/pull/63): Fix Bug in `MONTHLY_ISSUE` Constant
+* [#64](https://github.com/saadmk11/django-newsfeed/pull/64): Add Support For Django 4.0 and Python 3.10
+* [#65](https://github.com/saadmk11/django-newsfeed/pull/65): Bump django from 3.2.9 to 3.2.10
+
+
 # Version: 0.8.6
 
 * [#42](https://github.com/saadmk11/django-newsfeed/pull/42): Bump django from 3.1.8 to 3.1.9
