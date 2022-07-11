@@ -5,7 +5,7 @@ readme = open('README.rst').read()
 
 setup(
     name='django-newsfeed',
-    version='0.8.7',
+    version='0.8.8',
     description="""A news curator and newsletter subscription package for django""",
     long_description=readme,
     long_description_content_type='text/markdown',
