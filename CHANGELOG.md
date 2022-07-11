@@ -1,3 +1,10 @@
+# Version: 0.8.8
+
+* [#80](https://github.com/saadmk11/django-newsfeed/pull/80): Bump model-bakery from 1.3.3 to 1.6.0
+* [#82](https://github.com/saadmk11/django-newsfeed/pull/82): Add missing migrations
+* [#81](https://github.com/saadmk11/django-newsfeed/pull/81): Bump django from 3.2.10 to 3.2.14
+
+
 # Version: 0.8.7
 
 * [#59](https://github.com/saadmk11/django-newsfeed/pull/59): Bump django from 3.2.8 to 3.2.9
