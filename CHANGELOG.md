@@ -1,3 +1,23 @@
+# Version: 1.0.0
+
+## Breaking changes
+
+* Python 3.11 is now the minimum. Supported versions are 3.11, 3.12, 3.13, and 3.14.
+* Django 5.2 is now the minimum. Supported versions are 5.2 LTS, 6.0, and 6.1.
+* `respect_schedule` is keyword-only on `send_email_newsletter()` and `NewsletterEmailSender`. Pass it as `respect_schedule=False`.
+
+## Changes
+
+* Projects that configure Django 6.1 `MAILERS` send from `DEFAULT_FROM_EMAIL`. Projects that still use the `EMAIL_*` settings send from `EMAIL_HOST_USER`.
+* `NewsfeedConfig.default_auto_field` stays `AutoField`, so existing primary keys are not rewritten when a project uses `BigAutoField`.
+* The installed distribution includes `newsfeed.utils` and `newsfeed.migrations`.
+* The project is packaged with `pyproject.toml` and managed with uv. `setup.py` and the requirements files are gone.
+* Tests run through tox, and uv builds each tox environment. An allowed-to-fail job also runs the suite on the Python 3.15 release candidate.
+* Flake8 is replaced by Ruff.
+* A GitHub Actions workflow publishes to PyPI with `uv publish` when a tag such as `1.0.0` is pushed. Tags do not use a `v` prefix.
+* The README shows how to call `send_email_newsletter()` from your own Django task or Celery task. The package does not depend on either runner.
+
+
 # Version: 0.8.8
 
 * [#80](https://github.com/saadmk11/django-newsfeed/pull/80): Bump model-bakery from 1.3.3 to 1.6.0

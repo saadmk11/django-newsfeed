@@ -1,0 +1,100 @@
+[build-system]
+requires = ["setuptools>=77"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "django-newsfeed"
+version = "1.0.0"
+description = "A news curator and newsletter subscription package for django"
+readme = "README.rst"
+license = "GPL-3.0-only"
+license-files = ["LICENSE"]
+requires-python = ">=3.11"
+authors = [
+    { name = "Maksudul Haque", email = "saad.mk112@gmail.com" },
+]
+keywords = [
+    "django",
+    "django-newsfeed",
+    "news",
+    "newsletter",
+    "subscription",
+]
+classifiers = [
+    "Development Status :: 4 - Beta",
+    "Intended Audience :: Developers",
+    "Natural Language :: English",
+    "Operating System :: OS Independent",
+    "Programming Language :: Python :: 3",
+    "Programming Language :: Python :: 3 :: Only",
+    "Programming Language :: Python :: 3.11",
+    "Programming Language :: Python :: 3.12",
+    "Programming Language :: Python :: 3.13",
+    "Programming Language :: Python :: 3.14",
+    "Framework :: Django",
+    "Framework :: Django :: 5.2",
+    "Framework :: Django :: 6.0",
+    "Framework :: Django :: 6.1",
+]
+dependencies = [
+    "Django>=5.2",
+]
+
+[project.urls]
+Homepage = "https://github.com/saadmk11/django-newsfeed"
+Changelog = "https://github.com/saadmk11/django-newsfeed/blob/master/CHANGELOG.md"
+Issues = "https://github.com/saadmk11/django-newsfeed/issues"
+
+[dependency-groups]
+test = [
+    "coverage>=7.10.0",
+    "model-bakery>=1.24.1",
+]
+lint = [
+    "ruff>=0.13",
+]
+dev = [
+    { include-group = "test" },
+    { include-group = "lint" },
+    "tox>=4.22",
+    "tox-uv>=1.23",
+]
+
+[tool.uv]
+package = true
+required-version = ">=0.12"
+
+[tool.ruff]
+target-version = "py311"
+line-length = 80
+src = ["newsfeed", "tests", "test_project"]
+extend-exclude = [".venv", ".tox", "dist"]
+
+[tool.ruff.lint]
+select = ["ALL"]
+preview = true
+# D203/D213 contradict D211/D212, so Ruff cannot enable both.
+# CPY001 asks for a copyright header in every file. The project license
+# lives in LICENSE instead.
+# DJ001 wants string fields to drop null=True. Existing issue descriptions
+# already allow NULL, so that column stays as it is.
+ignore = ["D203", "D213", "CPY001", "DJ001"]
+
+# S101 and the pytest assert rules both apply when every rule is enabled.
+# Tests have to use assert, so the bandit assert rule is limited to
+# application code. S105 and S106 flag the fixture credentials in tests
+# and the local test project settings.
+[tool.ruff.lint.per-file-ignores]
+"tests/**" = ["S101", "S105", "S106", "PLR6301", "PT027"]
+"test_project/settings.py" = ["S105"]
+
+[tool.setuptools.packages.find]
+include = ["newsfeed*"]
+exclude = ["tests*", "test_project*"]
+
+[tool.setuptools.package-data]
+newsfeed = [
+    "templates/newsfeed/*.html",
+    "templates/newsfeed/email/*",
+    "static/newsfeed/js/*",
+]

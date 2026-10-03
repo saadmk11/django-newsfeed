@@ -37,8 +37,22 @@ Features
 Requirements
 ============
 
-* **Python**: 3.6, 3.7, 3.8, 3.9, 3.10
-* **Django**: 2.2, 3.0, 3.1, 3.2, 4.0
+* **Python**: 3.11, 3.12, 3.13, 3.14
+* **Django**: 5.2 (LTS), 6.0, 6.1
+
+Django 5.2 is tested on Python 3.11, 3.12, 3.13, and 3.14.
+Django 6.0 and 6.1 are tested on Python 3.12, 3.13, and 3.14.
+These are the releases that still receive upstream support.
+
+CI also runs the suite on the Python 3.15 release candidate with Django
+5.2, 6.0, and 6.1. A failure there does not fail the supported-version jobs.
+There is no Django beta or release candidate to test right now.
+Run the Python 3.15 watch locally with:
+
+.. code-block:: sh
+
+    uv python install 3.15
+    uv run tox -e py315-django61
 
 Example Project
 ===============
@@ -62,6 +76,12 @@ Install ``django-newsfeed`` using pip:
 .. code-block:: sh
 
     pip install django-newsfeed
+
+Or, with uv:
+
+.. code-block:: sh
+
+    uv add django-newsfeed
 
 
 Then add ``newsfeed`` to your ``INSTALLED_APPS``:
@@ -105,7 +125,7 @@ Just add ``newsfeed`` directory inside your templates directory
 add templates with the same name as the showed tree below.
 more on template overriding on the `django docs`_
 
-.. _django docs: https://docs.djangoproject.com/en/3.1/howto/overriding-templates/
+.. _django docs: https://docs.djangoproject.com/en/stable/howto/overriding-templates/
 
 Template Tree for ``django-newfeed``:
 
@@ -152,16 +172,123 @@ These actions are available from the admin panel:
 * **mark issues as draft:**  The selected issues will be marked as draft.
 * **hide posts:**  The selected posts will be hidden from the issues.
 * **make posts visible:**  The selected posts will visible on the issues.
-* **send newsletters:**  Sends selected newsletters to all the subscribers.
-(``send newsletters`` action should be overridden to use a background task queue.
-See the `example project`_ to see an example using celery)
+* **send newsletters:** Sends the selected newsletters to subscribers in
+the current request. ``respect_schedule`` is ``False``, so a future
+schedule does not block a manual send.
 
 **Send Email Newsletter**
 
-We provide a class to handle sending email newsletters to the subscribers.
-We do not provide any background task queue by default. But it is fairly easy to set it up.
+``send_email_newsletter()`` renders each newsletter and sends it to
+subscribers. It does not depend on a task runner. Call it from whichever
+background runner you already use. Pass primary keys into the task, then
+load the newsletters inside the task. A queryset cannot be serialized
+into a task payload.
 
-See the `example project`_ to see an example using ``celery`` and ``celery-beat``.
+``respect_schedule=False`` matches the admin action and sends the selected
+newsletters even when their schedule is still in the future.
+``respect_schedule=True`` sends every unsent newsletter whose schedule has
+arrived. Omit ``newsletters`` for that scheduled run.
+
+Django tasks
+------------
+
+Django 6.0 and later include a task framework. The default backend runs
+the task inside ``enqueue()``. Configure ``TASKS`` with a worker backend
+when the mail should be sent after the request ends.
+
+.. code-block:: python
+
+    # project/tasks.py
+    from django.tasks import task
+
+    from newsfeed.models import Newsletter
+    from newsfeed.utils.send_newsletters import send_email_newsletter
+
+    @task
+    def send_selected_newsletters(newsletter_ids, respect_schedule=False):
+        send_email_newsletter(
+            newsletters=Newsletter.objects.filter(pk__in=newsletter_ids),
+            respect_schedule=respect_schedule,
+        )
+
+    @task
+    def send_due_newsletters():
+        send_email_newsletter(respect_schedule=True)
+
+Replace the built-in admin action with one that only enqueues the task:
+
+.. code-block:: python
+
+    # project/admin.py
+    from django.contrib import admin, messages
+
+    from newsfeed.admin import NewsletterAdmin
+    from newsfeed.models import Newsletter
+    from project.tasks import send_selected_newsletters
+
+    admin.site.unregister(Newsletter)
+
+    @admin.register(Newsletter)
+    class QueuedNewsletterAdmin(NewsletterAdmin):
+        actions = ("send_newsletters",)
+
+        @admin.action(description="Send newsletters")
+        def send_newsletters(self, request, queryset):
+            send_selected_newsletters.enqueue(
+                newsletter_ids=list(queryset.values_list("pk", flat=True)),
+                respect_schedule=False,
+            )
+            messages.success(request, "Queued the selected newsletters.")
+
+Celery
+------
+
+.. code-block:: python
+
+    # project/tasks.py
+    from celery import shared_task
+
+    from newsfeed.models import Newsletter
+    from newsfeed.utils.send_newsletters import send_email_newsletter
+
+    @shared_task
+    def send_selected_newsletters(newsletter_ids, respect_schedule=False):
+        send_email_newsletter(
+            newsletters=Newsletter.objects.filter(pk__in=newsletter_ids),
+            respect_schedule=respect_schedule,
+        )
+
+    @shared_task
+    def send_due_newsletters():
+        send_email_newsletter(respect_schedule=True)
+
+Point Celery at the Django settings and let it discover ``tasks`` modules:
+
+.. code-block:: python
+
+    # project/celery.py
+    from celery import Celery
+
+    app = Celery("project")
+    app.config_from_object("django.conf:settings", namespace="CELERY")
+    app.autodiscover_tasks()
+
+    app.conf.beat_schedule = {
+        "send-due-newsletters": {
+            "task": "project.tasks.send_due_newsletters",
+            "schedule": 60.0,
+        },
+    }
+
+The replacement admin action is the same as the Django tasks example,
+except the task is started with ``delay``:
+
+.. code-block:: python
+
+    send_selected_newsletters.delay(
+        newsletter_ids=list(queryset.values_list("pk", flat=True)),
+        respect_schedule=False,
+    )
 
 You can override this template to change the style of the newsletter:
 
@@ -235,6 +362,16 @@ The ``JavaScript`` code for ``ajax`` is included with ``django-newsfeed`` and on
 This is only required if you are not using ``ajax`` request on the unsubscription form.
 The ``JavaScript`` code for ``ajax`` is included with ``django-newsfeed`` and on by default.
 
+Email From address
+------------------
+
+Verification messages and newsletters are sent from ``EMAIL_HOST_USER``.
+
+Django 6.1 projects that configure ``MAILERS`` cannot read the ``EMAIL_*``
+settings. Set ``DEFAULT_FROM_EMAIL`` in that case. ``django-newsfeed`` uses
+``DEFAULT_FROM_EMAIL`` when ``MAILERS`` is configured, and keeps using
+``EMAIL_HOST_USER`` otherwise.
+
 
 Signals
 =======
@@ -244,7 +381,7 @@ You can add ``receivers`` to listen to the signals and
 add your own functionality after each signal is sent.
 To learn more about ``signals`` refer to django `Signals Documentation`_.
 
-.. _Signals Documentation: https://docs.djangoproject.com/en/3.1/topics/signals/
+.. _Signals Documentation: https://docs.djangoproject.com/en/stable/topics/signals/
 
 
 Subscriber Signals
