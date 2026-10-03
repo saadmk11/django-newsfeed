@@ -173,8 +173,8 @@ These actions are available from the admin panel:
 * **hide posts:**  The selected posts will be hidden from the issues.
 * **make posts visible:**  The selected posts will visible on the issues.
 * **send newsletters:** Sends the selected newsletters to subscribers in
-the current request. ``respect_schedule`` is ``False``, so a future
-schedule does not block a manual send.
+  the current request. ``respect_schedule`` is ``False``, so a future
+  schedule does not block a manual send.
 
 **Send Email Newsletter**
 
