@@ -72,20 +72,22 @@ Follow the steps below to set up ``django-newsfeed`` locally.
 
     $ git clone git@github.com:<your-github-username>/django-newsfeed.git
 
-3. change directory to ``django-newsfeed`` and install ``django-newsfeed`` inside a virtualenv:
+3. change directory to ``django-newsfeed`` and install the package with uv.
+   Install uv from https://docs.astral.sh/uv/getting-started/installation/
+   if it is not already installed. Development uses Python 3.14.
 
 .. code-block:: sh
 
-    $ mkvirtualenv django-newsfeed     # you can use virtualenv instead of virtualenvwrapper
     $ cd django-newsfeed/
-    $ python setup.py develop
+    $ uv python install 3.14
+    $ uv sync
 
 4 Setup and Run the development server:
 
 .. code-block:: sh
 
-    $ python manage.py migrate
-    $ python manage.py runserver       # http://127.0.0.1:8000/
+    $ uv run python manage.py migrate
+    $ uv run python manage.py runserver       # http://127.0.0.1:8000/
 
 5. Create a new branch for local development:
 
@@ -100,9 +102,13 @@ Follow the steps below to set up ``django-newsfeed`` locally.
 
 .. code-block:: sh
 
-    $ tox
+    $ uv run tox
+    $ uv run tox run-parallel
 
-run ``pip install tox`` if its not already installed in your machine
+``tox run-parallel`` runs every supported Python and Django combination
+at the same time. uv installs the packages inside each tox environment.
+Run one combination with ``uv run tox -e py312-django52``.
+Run Ruff with ``uv run tox -e lint``.
 
 8. Commit the changes and push it to GitHub:
 

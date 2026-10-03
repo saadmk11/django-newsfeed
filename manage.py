@@ -1,4 +1,5 @@
 #!/usr/bin/env python
+"""Run Django management commands for the local test project."""
 
 import os
 import sys

@@ -20,9 +20,9 @@ A clear and concise description of what you expected to happen.
 A clear and concise description of what actually happened.
 
 **Your Environment:**
- - Python Version: [e.g. 3.8]
- - Django Version [e.g. 3.2]
- - Django-newsfeed Version [e.g. 0.8.4]
+ - Python Version: [e.g. 3.13]
+ - Django Version [e.g. 5.2]
+ - Django-newsfeed Version [e.g. 1.0.0]
 
 **Additional context**
 Add any other context about the problem here.

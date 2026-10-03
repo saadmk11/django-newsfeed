@@ -1,0 +1,45 @@
+name: Publish to PyPI
+
+on:
+  push:
+    tags:
+      # Publish when a version tag is pushed, for example 1.0.0.
+      - "[0-9]+.[0-9]+.[0-9]+"
+      - "[0-9]+.[0-9]+.[0-9]+-*"
+
+jobs:
+  publish:
+    runs-on: ubuntu-latest
+    environment:
+      name: pypi
+    permissions:
+      id-token: write
+      contents: read
+
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: astral-sh/setup-uv@v10.2.0
+
+      - name: Install Python
+        run: uv python install 3.14
+
+      - name: Check the tag matches the package version
+        run: |
+          version="$(uv run --no-project python -c "import pathlib, tomllib; print(tomllib.loads(pathlib.Path('pyproject.toml').read_text())['project']['version'])")"
+          tag="${GITHUB_REF_NAME}"
+          if [ "$tag" != "$version" ]; then
+            echo "Tag ${tag} does not match pyproject.toml version ${version}."
+            exit 1
+          fi
+
+      - name: Build
+        run: uv build
+
+      - name: Check the built distributions import
+        run: |
+          uv run --isolated --no-project --with dist/*.whl python -c "import newsfeed"
+          uv run --isolated --no-project --with dist/*.tar.gz python -c "import newsfeed"
+
+      - name: Publish
+        run: uv publish

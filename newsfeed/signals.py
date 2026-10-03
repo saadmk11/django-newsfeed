@@ -1,3 +1,5 @@
+"""Signals sent when verification mail is sent, or a subscription changes."""
+
 from django.dispatch import Signal
 
 # Sent after email verification is sent, with Subscriber instance
